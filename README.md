@@ -24,10 +24,13 @@ SpongeBob是一个基于Reactor模式的多线程服务器框架，是我在阅�
 一共有三个回调函数可以设置
 
 * setNewConnCallBack() 设置连接成功建立时的回调函数 
+
 传入的回调函数签名为 void(const spTcpConnection&)
 * setMsgCallBack() 设置收到消息时的回调函数 
+
 传入的回调函数签名为 void(const spTcpConnection&, std::string&)
 * setWriteCompleteCallBack() 设置消息完全发送时的回调函数
+
 传入的回调函数签名为 void(const spTcpConnection&)
 
 比如写一个Echo服务器，我们需要设置收到消息时的回调函数
