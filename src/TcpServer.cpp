@@ -1,4 +1,5 @@
 #include "TcpServer.h"
+#include <signal.h>
 #include <strings.h>
 #include <sys/fcntl.h>
 #include <unistd.h>
@@ -11,6 +12,7 @@ TcpServer::TcpServer(EventLoop* loop, int port, int threadNum)
       connCount(0),
       connMap_(),
       threadPool_(loop, threadNum) {
+    signal(SIGPIPE,SIG_IGN);
     serverFd_ = socket(AF_INET, SOCK_STREAM, 0);
 
     if (serverFd_ < 0) {
@@ -83,7 +85,7 @@ void TcpServer::onNewConn() {
     int clientFd;
     socklen_t len = sizeof(clientAddr);
     while ((clientFd = accept(serverFd_, (sockaddr*)&clientAddr, &len)) > 0) {
-        //std::cout << "New client from IP:" << inet_ntoa(clientAddr.sin_addr)
+        // std::cout << "New client from IP:" << inet_ntoa(clientAddr.sin_addr)
         //          << ":" << ntohs(clientAddr.sin_port) << std::endl;
         if (connCount + 1 >= MAXCONN) {
             close(clientFd);
@@ -102,7 +104,7 @@ void TcpServer::onNewConn() {
             std::bind(&TcpServer::removeConn, this, std::placeholders::_1));
 
         {
-            std::lock_guard lock(mutex_);
+            std::lock_guard<std::mutex> lock(mutex_);
             connMap_[clientFd] = spConn;
             connCount++;
         }
@@ -115,11 +117,12 @@ void TcpServer::onNewConn() {
 
 void TcpServer::removeConn(const spTcpConnection& spConn) {
     const sockaddr_in& clientAddr = spConn->getSockAddr();
-    //std::cout << "Remove client from IP:" << inet_ntoa(clientAddr.sin_addr)
-    //         << ":" << ntohs(clientAddr.sin_port) << "  FD:" << spConn->getFd()
+    // std::cout << "Remove client from IP:" << inet_ntoa(clientAddr.sin_addr)
+    //         << ":" << ntohs(clientAddr.sin_port) << "  FD:" <<
+    //         spConn->getFd()
     //          << std::endl;
 
-    std::lock_guard lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
     connMap_.erase(spConn->getFd());
     --connCount;
 }
