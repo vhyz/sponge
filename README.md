@@ -35,7 +35,7 @@ SpongeBob是一个基于Reactor模式的多线程服务器框架，是我在阅�
 
 比如写一个Echo服务器，我们需要设置收到消息时的回调函数
 
-'''C++
+```C++
 #include "TcpServer.h"
 
 void echo(const spTcpConnection& spConn, std::string& msg) {
@@ -56,7 +56,7 @@ int main() {
 
     tcpServer.start();
 }
-'''
+```
 
 ## Performance Test
 
