@@ -75,8 +75,8 @@ void TcpConnection::addChannelToLoop() {
 
 void TcpConnection::handleRead() {
     int res = readMsg();
-    std::cout << "TcpConnection::handleRead  " << res << "  bytes" <<
-    std::endl;
+    //std::cout << "TcpConnection::handleRead  " << res << "  bytes"
+    //          << " " << std::this_thread::get_id() << std::endl;
     if (res > 0) {
         if (messageCallBack_)
             messageCallBack_(shared_from_this(), inputBuffer_);
@@ -92,7 +92,7 @@ void TcpConnection::handleWrite() { sendInLoop(); }
 void TcpConnection::handleError() {}
 
 void TcpConnection::handleClose() {
-    std::cout << "TcpConnection::handleClose" << std::endl;
+    // std::cout << "TcpConnection::handleClose" << std::endl;
     if (!connected) {
         return;
     }

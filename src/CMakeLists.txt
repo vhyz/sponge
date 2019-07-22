@@ -3,7 +3,7 @@ project(SpongeBob)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_definitions("-Wall -g")
+set(CMAKE_BUILD_TYPE "Release")
 add_executable(
     SpongeBob
     Channel.cpp

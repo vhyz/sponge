@@ -46,7 +46,7 @@ void EventLoop::loop() {
 }
 
 void EventLoop::readWakeUpHandle() {
-    std::cout << "wakeUpRead" << std::endl;
+    //std::cout << "wakeUpRead" << std::endl;
     uint64_t one = 1;
     read(wakeUpFd_, &one, sizeof(one));
 }

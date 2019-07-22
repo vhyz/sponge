@@ -83,8 +83,8 @@ void TcpServer::onNewConn() {
     int clientFd;
     socklen_t len = sizeof(clientAddr);
     while ((clientFd = accept(serverFd_, (sockaddr*)&clientAddr, &len)) > 0) {
-        std::cout << "New client from IP:" << inet_ntoa(clientAddr.sin_addr)
-                  << ":" << ntohs(clientAddr.sin_port) << std::endl;
+        //std::cout << "New client from IP:" << inet_ntoa(clientAddr.sin_addr)
+        //          << ":" << ntohs(clientAddr.sin_port) << std::endl;
         if (connCount + 1 >= MAXCONN) {
             close(clientFd);
             connCount--;
@@ -115,9 +115,9 @@ void TcpServer::onNewConn() {
 
 void TcpServer::removeConn(const spTcpConnection& spConn) {
     const sockaddr_in& clientAddr = spConn->getSockAddr();
-    std::cout << "Remove client from IP:" << inet_ntoa(clientAddr.sin_addr)
-              << ":" << ntohs(clientAddr.sin_port) << "  FD:" << spConn->getFd()
-              << std::endl;
+    //std::cout << "Remove client from IP:" << inet_ntoa(clientAddr.sin_addr)
+    //         << ":" << ntohs(clientAddr.sin_port) << "  FD:" << spConn->getFd()
+    //          << std::endl;
 
     std::lock_guard lock(mutex_);
     connMap_.erase(spConn->getFd());
