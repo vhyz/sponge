@@ -14,7 +14,6 @@ add_executable(
     EchoServer.cpp
     TcpConnection.cpp
     TcpServer.cpp
-    HttpTestServer.cpp
  )
 
 
