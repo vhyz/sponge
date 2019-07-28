@@ -89,7 +89,6 @@ void TcpServer::onNewConn() {
         //          << ":" << ntohs(clientAddr.sin_port) << std::endl;
         if (connCount + 1 >= MAXCONN) {
             close(clientFd);
-            connCount--;
         }
 
         setNonblock(clientFd);

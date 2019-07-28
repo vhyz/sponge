@@ -17,10 +17,4 @@ int main() {
         std::bind(&echo, std::placeholders::_1, std::placeholders::_2));
 
     tcpServer.start();
-
-    auto fc = [](const spTcpConnection& spConn, std::string& msg) -> void {
-        std::string s;
-        s.swap(msg);
-        spConn->send(s);
-    };
 }
