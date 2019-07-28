@@ -42,6 +42,9 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
     void handleError();
 
+    // 强制关闭
+    void forceClose();
+
     int getFd() const { return fd_; }
 
     EventLoop* getLoop() const { return loop_; }

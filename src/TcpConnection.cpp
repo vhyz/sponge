@@ -75,7 +75,7 @@ void TcpConnection::addChannelToLoop() {
 
 void TcpConnection::handleRead() {
     int res = readMsg();
-    //std::cout << "TcpConnection::handleRead  " << res << "  bytes"
+    // std::cout << "TcpConnection::handleRead  " << res << "  bytes"
     //          << " " << std::this_thread::get_id() << std::endl;
     if (res > 0) {
         if (messageCallBack_)
@@ -99,6 +99,15 @@ void TcpConnection::handleClose() {
     if (closeCallBack_)
         closeCallBack_(shared_from_this());
     connected = false;
+}
+
+void TcpConnection::forceClose() {
+    if (loop_->runInLoop()) {
+        handleClose();
+    } else {
+        loop_->addTask(
+            std::bind(&TcpConnection::handleClose, shared_from_this()));
+    }
 }
 
 int TcpConnection::readMsg() {
