@@ -12,7 +12,7 @@ TcpServer::TcpServer(EventLoop* loop, int port, int threadNum)
       connCount(0),
       connMap_(),
       threadPool_(loop, threadNum) {
-    signal(SIGPIPE,SIG_IGN);
+    signal(SIGPIPE, SIG_IGN);
     serverFd_ = socket(AF_INET, SOCK_STREAM, 0);
 
     if (serverFd_ < 0) {
@@ -42,8 +42,6 @@ void TcpServer::start() {
     threadPool_.start();
 
     loop_->addChannel(&serverChannel);
-
-    loop_->loop();
 }
 
 void TcpServer::setNonblock(int fd) {
@@ -93,24 +91,22 @@ void TcpServer::onNewConn() {
 
         setNonblock(clientFd);
 
-        EventLoop* loop = threadPool_.getNextLoop();
+        EventLoop* ioLoop = threadPool_.getNextLoop();
         spTcpConnection spConn =
-            std::make_shared<TcpConnection>(clientFd, loop, clientAddr);
+            std::make_shared<TcpConnection>(clientFd, ioLoop, clientAddr);
 
         spConn->setMessageCallBack(msgCallBack_);
         spConn->setSendCallBack(writeCompleteCallBack_);
+        spConn->setConnCallBack(connCallBack_);
         spConn->setCloseCallBack(
             std::bind(&TcpServer::removeConn, this, std::placeholders::_1));
-
+ 
         {
             std::lock_guard<std::mutex> lock(mutex_);
             connMap_[clientFd] = spConn;
             connCount++;
         }
-        if (newConnCallBack_)
-            newConnCallBack_(spConn);
-
-        spConn->addChannelToLoop();
+        ioLoop->addTask(std::bind(&TcpConnection::connEstablished, spConn));
     }
 }
 

@@ -16,7 +16,7 @@ class TcpServer {
 
     ~TcpServer();
 
-    void setNewConnCallBack(CallBack cb) { newConnCallBack_ = std::move(cb); }
+    void setConnCallBack(CallBack cb) { connCallBack_ = std::move(cb); }
 
     void setMsgCallBack(MsgCallBack cb) { msgCallBack_ = std::move(cb); }
 
@@ -50,7 +50,7 @@ class TcpServer {
     std::mutex mutex_;
 
     // 回调函数
-    CallBack newConnCallBack_;
+    CallBack connCallBack_;
     MsgCallBack msgCallBack_;
     CallBack writeCompleteCallBack_;
 

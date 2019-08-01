@@ -110,6 +110,12 @@ void TcpConnection::forceClose() {
     }
 }
 
+void TcpConnection::connEstablished() {
+    loop_->addChannel(&channel_);
+    if (connCallBack_)
+        connCallBack_(shared_from_this());
+}
+
 int TcpConnection::readMsg() {
     char buf[BufferSize];
 

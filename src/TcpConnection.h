@@ -61,6 +61,10 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
         messageCallBack_ = std::move(cb);
     }
 
+    void setConnCallBack(CallBack cb) { connCallBack_ = std::move(cb); }
+
+    void connEstablished();
+
    private:
     // socket fd;
     int fd_;
@@ -87,6 +91,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     CallBack closeCallBack_;
     CallBack errorCallBack_;
     MessageCallBack messageCallBack_;
+    CallBack connCallBack_;
 
     int readMsg();
 

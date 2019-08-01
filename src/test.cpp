@@ -17,4 +17,5 @@ int main() {
         std::bind(&echo, std::placeholders::_1, std::placeholders::_2));
 
     tcpServer.start();
+    loop.loop();
 }
