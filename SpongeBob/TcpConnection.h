@@ -30,9 +30,6 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     // 在loop线程中发送消息
     void sendInLoop();
 
-    // 一切回调函数设置好后，将channel添加至loop中
-    void addChannelToLoop();
-
     // 各种回调函数，传递给连接的channel
     void handleRead();
 
@@ -86,6 +83,9 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
     // 是否连接的标志位
     bool connected;
+
+    // 半关闭标志位
+    bool half_close_;
 
     CallBack sendCallBack_;
     CallBack closeCallBack_;
