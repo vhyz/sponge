@@ -1,5 +1,7 @@
 #include "Poller.h"
 #include <assert.h>
+#include <errno.h>
+#include <string.h>
 #include <unistd.h>
 #include <iostream>
 
@@ -87,6 +89,7 @@ void Poller::deleteChannel(Channel* channel) {
 
     if (epoll_ctl(epollfd_, EPOLL_CTL_DEL, fd, &event) < 0) {
         std::cout << "epoll_ctl error" << std::endl;
+        std::cout << strerror(errno) << std::endl;
         exit(1);
     }
 }

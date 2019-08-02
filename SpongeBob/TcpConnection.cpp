@@ -22,7 +22,10 @@ TcpConnection::TcpConnection(int fd, EventLoop* loop, sockaddr_in clientAddr)
 }
 
 // 析构函数，不可能由主线程运行，因为主线程已经cleanup
-TcpConnection::~TcpConnection() { close(fd_); }
+TcpConnection::~TcpConnection() {
+    
+    close(fd_);
+}
 
 void TcpConnection::send(const std::string& msg) {
     // FIXME 存在线程安全问题
@@ -71,8 +74,25 @@ void TcpConnection::sendInLoop() {
     }
 }
 
-void TcpConnection::addChannelToLoop() {
-    loop_->addTask(std::bind(&EventLoop::addChannel, loop_, &channel_));
+void TcpConnection::shutdown() {
+    if (loop_->runInLoop()) {
+        shutdownInLoop();
+    } else {
+        loop_->addTask(
+            std::bind(&TcpConnection::shutdownInLoop, shared_from_this()));
+    }
+}
+
+void TcpConnection::shutdownInLoop() {
+    if (!connected) {
+        return;
+    }
+
+    if (outputBuffer_.size() > 0) {
+        half_close_ = true;
+    } else {
+        handleClose();
+    }
 }
 
 void TcpConnection::handleRead() {
@@ -91,29 +111,18 @@ void TcpConnection::handleRead() {
 
 void TcpConnection::handleWrite() { sendInLoop(); }
 
-void TcpConnection::handleError() {
-    if (!connected) {
-        return;
-    }
-
-    if (errorCallBack_)
-        errorCallBack_(shared_from_this());
-    if (closeCallBack_)
-        closeCallBack_(shared_from_this());
-
-    connected = false;
-}
+void TcpConnection::handleError() {}
 
 void TcpConnection::handleClose() {
-    // std::cout << "TcpConnection::handleClose" << std::endl;
+    std::cout << "TcpConnection::handleClose" << std::endl;
     if (!connected) {
         return;
     }
+    connected = false;
 
+    loop_->deleteChannle(&channel_);
     if (closeCallBack_)
         closeCallBack_(shared_from_this());
-    connected = false;
-    loop_->deleteChannle(&channel_);
 }
 
 void TcpConnection::forceClose() {
