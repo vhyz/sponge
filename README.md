@@ -61,7 +61,7 @@ int main() {
 
 ## Performance Test
 
-* 项目使用wrk进行HTTP压力测试，分别测试了localhost与内网的1K和10K个并发长连接时的情况，使用的为UCloud上的云服务器。
+* 为了测试方便，简单写了个HTTP的服务器，该项目使用wrk进行HTTP压力测试，分别测试了localhost与内网的1K和10K个并发长连接时的情况，使用的为UCloud上的云服务器。
 
 * 机器配置：
     * CPU： 高频型16核

@@ -22,10 +22,7 @@ TcpConnection::TcpConnection(int fd, EventLoop* loop, sockaddr_in clientAddr)
 }
 
 // 析构函数，不可能由主线程运行，因为主线程已经cleanup
-TcpConnection::~TcpConnection() {
-    
-    close(fd_);
-}
+TcpConnection::~TcpConnection() { close(fd_); }
 
 void TcpConnection::send(const std::string& msg) {
     // FIXME 存在线程安全问题
