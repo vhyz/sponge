@@ -61,7 +61,7 @@ int main() {
 
 ## Performance Test
 
-* 为了测试方便，简单写了个HTTP的服务器，该项目使用wrk进行HTTP压力测试，分别测试了localhost与内网的1K和10K个并发长连接时的情况，使用的为UCloud上的云服务器。
+* 为了测试方便，写了一个简单的HTTP服务器，然后使用wrk进行HTTP压力测试，分别测试了localhost与内网的1K和10K个并发长连接时的情况，使用的为UCloud上的云服务器。
 
 * 机器配置：
     * CPU： 高频型16核
@@ -90,11 +90,11 @@ int main() {
 
 内网测试指开两台服务器，一台服务器用来当客户端，另外一台服务器用来当服务器
 
-* 主线程+7个IO线程 并发1K个连接
+* 主线程+15个IO线程 并发1K个连接
 
 ![](https://github.com/vhyz/SpongeBob/blob/master/img/6.png)
 
-* 主线程+7个IO线程 并发10K个连接
+* 主线程+15个IO线程 并发10K个连接
 
 ![](https://github.com/vhyz/SpongeBob/blob/master/img/5.png)
 
