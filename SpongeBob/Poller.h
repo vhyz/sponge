@@ -1,5 +1,5 @@
-#ifndef SPONGEBOB_POLL_H
-#define SPONGEBOB_POLL_H
+#ifndef SPONGEBOB_POLLER_H
+#define SPONGEBOB_POLLER_H
 
 #include <sys/epoll.h>
 #include <map>

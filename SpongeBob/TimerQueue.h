@@ -6,7 +6,6 @@
 #include <utility>
 #include <vector>
 #include "Channel.h"
-#include "EventLoop.h"
 #include "Timer.h"
 
 using TimerId = std::weak_ptr<Timer>;

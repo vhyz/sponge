@@ -2,7 +2,7 @@
 #include <sys/time.h>
 
 
-TimeStamp now() {
+TimeStamp getNowTimeStamp() {
     timeval tv;
     gettimeofday(&tv, nullptr);
     return static_cast<int64_t>(tv.tv_sec) * kMicroSecondsPerSecond +

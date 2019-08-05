@@ -1,9 +1,13 @@
 #include "TimerQueue.h"
 #include <assert.h>
+#include <errno.h>
+#include <string.h>
+#include <strings.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
 #include <algorithm>
 #include <iostream>
+#include "EventLoop.h"
 
 int create_timerfd() {
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
@@ -22,6 +26,7 @@ TimerQueue::TimerQueue(EventLoop* loop)
 
     channel_.setFd(timerFd_);
     channel_.setEvents(EPOLLIN);
+    channel_.setReadCallBack(std::bind(&TimerQueue::handleRead, this));
 
     loop_->addChannel(&channel_);
 }
@@ -90,11 +95,15 @@ void TimerQueue::resetTimerFd() {
         ts.tv_nsec = (microseconds % kMicroSecondsPerSecond) * 1000;
 
         itimerspec newValue;
+        bzero(&newValue, sizeof(newValue));
+
         newValue.it_value = ts;
 
         int ret = timerfd_settime(timerFd_, 0, &newValue, nullptr);
 
         if (ret) {
+            std::cout << strerror(errno) << std::endl;
+
             std::cout << "timerfd_settime error" << std::endl;
         }
     }
@@ -121,11 +130,12 @@ void TimerQueue::update(const std::vector<Entry>& entries, TimeStamp now) {
 
 void TimerQueue::handleRead() {
     // 先读timerFd
+
+    TimeStamp now = getNowTimeStamp();
+
     uint64_t readSize;
     read(timerFd_, &readSize, sizeof(readSize));
     assert(readSize == sizeof(readSize));
-
-    TimeStamp now = getNowTimeStamp();
 
     auto entries = getExpired(now);
 
@@ -133,5 +143,6 @@ void TimerQueue::handleRead() {
         entry.second->run();
     }
 
+    nextExpiration_ = -1;
     update(entries, now);
 }
