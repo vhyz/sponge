@@ -19,7 +19,8 @@ EventLoop::EventLoop()
       threadId_(std::this_thread::get_id()),
       mutex_(),
       taskList_(),
-      wakeUpFd_(-1) {
+      wakeUpFd_(-1),
+      timerQueue_(this) {
     wakeUpFd_ = createEventFd();
     wakeChannel_.setFd(wakeUpFd_);
     wakeChannel_.setEvents(EPOLLIN);
@@ -46,7 +47,7 @@ void EventLoop::loop() {
 }
 
 void EventLoop::readWakeUpHandle() {
-    //std::cout << "wakeUpRead" << std::endl;
+    // std::cout << "wakeUpRead" << std::endl;
     uint64_t one = 1;
     read(wakeUpFd_, &one, sizeof(one));
 }
@@ -76,3 +77,17 @@ void EventLoop::runTasks() {
 }
 
 bool EventLoop::runInLoop() { return threadId_ == std::this_thread::get_id(); }
+
+TimerId EventLoop::runAfter(double delay, CallBack cb) {
+    TimeStamp when = addTime(getNowTimeStamp(), delay);
+    return timerQueue_.addTimer(when, std::move(cb), 0.0);
+}
+
+TimerId EventLoop::runEvery(double interval, CallBack cb) {
+    TimeStamp when = addTime(getNowTimeStamp(), interval);
+    return timerQueue_.addTimer(when, std::move(cb), interval);
+}
+
+void EventLoop::cancel(TimerId timerId) {
+    timerQueue_.cancel(std::move(timerId));
+}

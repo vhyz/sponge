@@ -5,8 +5,11 @@
 #include <mutex>
 #include <thread>
 #include <vector>
+#include "CallBack.h"
 #include "Channel.h"
 #include "Poller.h"
+#include "Timer.h"
+#include "TimerQueue.h"
 
 class EventLoop {
    public:
@@ -34,6 +37,12 @@ class EventLoop {
 
     bool runInLoop();
 
+    TimerId runAfter(double delay, CallBack cb);
+
+    TimerId runEvery(double interval, CallBack cb);
+
+    void cancel(TimerId timerId);
+
    private:
     Poller poller_;
 
@@ -52,6 +61,8 @@ class EventLoop {
 
     // 监听唤醒读事件
     Channel wakeChannel_;
+
+    TimerQueue timerQueue_;
 };
 
 #endif

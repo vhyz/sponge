@@ -1,10 +1,12 @@
 #ifndef SPONGEBOB_TIMESTAMP_H
 #define SPONGEBOB_TIMESTAMP_H
 
-#include<stdint.h>
+#include <stdint.h>
+
+const int64_t kMicroSecondsPerSecond = 1000 * 1000;
 
 using TimeStamp = int64_t;
 
-TimeStamp now();
-
+TimeStamp getNowTimeStamp();
+TimeStamp addTime(TimeStamp time, double seconds);
 #endif

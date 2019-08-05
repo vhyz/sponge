@@ -12,8 +12,6 @@ class Channel {
 
     using EventCallBack = std::function<void()>;
 
-    Channel(EventLoop* loop, int fd);
-
     void handleEvent();
 
     int getFd() const { return fd_; }

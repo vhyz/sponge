@@ -3,17 +3,25 @@
 
 #include <stdint.h>
 #include "CallBack.h"
-
-using TimeStamp = int64_t;
+#include "TimeStamp.h"
 
 class Timer {
    public:
-    Timer(TimeStamp expiration, CallBack cb, bool repeat)
-        : expiration_(expiration), callBack_(std::move(cb)), repeat_(repeat) {}
+    Timer(TimeStamp expiration, CallBack cb, double interval)
+        : expiration_(expiration),
+          callBack_(std::move(cb)),
+          interval_(interval) {}
 
     TimeStamp getExpiration() const { return expiration_; }
 
-    bool isRepeat() const { return repeat_; }
+    double getInterval() const { return interval_; }
+
+    void run() { callBack_(); }
+
+    void restart(TimeStamp now) { expiration_ = addTime(now, interval_); }
+
+    bool repeat() const { return interval_ > 0; }
+
    private:
     // Timer开始时间
     TimeStamp expiration_;
@@ -21,7 +29,7 @@ class Timer {
     // 回调函数
     CallBack callBack_;
 
-    // 启动间隔
+    // 反复进行的间隔
     double interval_;
 };
 
