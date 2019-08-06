@@ -129,10 +129,9 @@ void TimerQueue::update(const std::vector<Entry>& entries, TimeStamp now) {
 }
 
 void TimerQueue::handleRead() {
-    // 先读timerFd
-
     TimeStamp now = getNowTimeStamp();
 
+    // 先读timerFd
     uint64_t readSize;
     read(timerFd_, &readSize, sizeof(readSize));
     assert(readSize == sizeof(readSize));

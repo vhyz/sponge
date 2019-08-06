@@ -2,6 +2,7 @@
 #define SPONGEBOB_TCPCONNECTION_H
 
 #include <arpa/inet.h>
+#include <any>
 #include <functional>
 #include <memory>
 #include <string>
@@ -65,6 +66,11 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     void shutdown();
 
     void shutdownInLoop();
+
+    void setContext(const std::any& context) { context_ = context; }
+
+    const std::any& getContext() { return context_; }
+
    private:
     // socket fd;
     int fd_;
@@ -95,6 +101,8 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     CallBack errorCallBack_;
     MessageCallBack messageCallBack_;
     CallBack connCallBack_;
+
+    std::any context_;
 
     int readMsg();
 

@@ -16,7 +16,7 @@ SpongeBob是一个基于Reactor模式的多线程服务器框架，是我在阅�
 * 单进程多线程，其中多线程使用到了C++11的std::thread库
 * Reactor模式，线程分为主线程与IO线程，主线程仅监听一个新连接(accept)的事件，并按照Round Robin策略分发给其他IO线程，IO线程负责对主线程分发的连接的读写
 * 由于TCP连接常在回调函数中使用，其生命周期模糊，使用std::shared_ptr管理TCP连接，保证了TCP连接生命周期不会过早结束
-* 用Linux提供的timerfd实现定时器功能，每个EventLoop都有一个TimerQueue，底层数据结构采用std::set，添加与删除的复杂度均为O(lgn)
+* 用Linux提供的timerfd实现定时器功能，每个EventLoop都有一个TimerQueue，底层数据结构采用std::set，添加与删除的复杂度均为O(logn)
 
 ## Usage
 
