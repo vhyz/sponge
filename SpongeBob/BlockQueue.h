@@ -1,3 +1,6 @@
+#ifndef SPONGEBOB_BLOCKQUEUE_H
+#define SPONGEBOB_BLOCKQUEUE_H
+
 #include <condition_variable>
 #include <mutex>
 #include <queue>
@@ -18,3 +21,5 @@ class BlockQueue {
 
     std::queue<CallBack> taskQueue_;
 };
+
+#endif

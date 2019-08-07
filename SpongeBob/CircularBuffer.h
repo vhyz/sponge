@@ -1,9 +1,12 @@
+#ifndef SPONGEBOB_CIRCULARBUFFER_H
+#define SPONGEBOB_CIRCULARBUFFER_H
+
 #include <list>
 
 template <typename T>
-class circular_buffer {
+class CircularBuffer {
    public:
-    explicit circular_buffer(size_t capacity) : capacity_(capacity) {}
+    explicit CircularBuffer(size_t capacity) : capacity_(capacity) {}
 
     void push_back(T value) {
         if (list_.size() == capacity_) {
@@ -16,7 +19,7 @@ class circular_buffer {
     T& back() { return list_.back(); }
 
     size_t capacity() const { return capacity_; }
-    
+
     size_t size() const { return list_.size(); }
 
    private:
@@ -24,3 +27,5 @@ class circular_buffer {
 
     size_t capacity_;
 };
+
+#endif

@@ -13,3 +13,10 @@ void ThreadPool::start() {
         threadList_.push_back(std::thread(&ThreadPool::threadFunc, this));
     }
 }
+
+void ThreadPool::threadFunc() {
+    while (true) {
+        CallBack task = taskQueue_.get();
+        task();
+    }
+}

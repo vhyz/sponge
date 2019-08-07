@@ -1,4 +1,4 @@
-#include "../SpongeBob/circular_buffer.h"
+#include"../SpongeBob/CircularBuffer.h"
 #include <iostream>
 
 using namespace std;
@@ -12,7 +12,7 @@ class test {
 };
 
 int main() {
-    circular_buffer<test> buffer(5);
+    CircularBuffer<test> buffer(5);
     {
         test t;
         for (int i = 0; i < 10; ++i) {
