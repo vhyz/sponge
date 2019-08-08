@@ -26,10 +26,9 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     ~TcpConnection();
 
     // 主动发送消息，由其他线程调用时会将任务添加至loop中
-    void send(const std::string& msg);
+    void send(std::string_view msg);
 
-    // 在loop线程中发送消息
-    void sendInLoop();
+    void send(const void* buf, size_t len);
 
     // 各种回调函数，传递给连接的channel
     void handleRead();
@@ -72,6 +71,11 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     const std::any& getContext() { return context_; }
 
    private:
+    // 在loop线程中发送消息
+    void sendInLoop(std::string_view msg);
+
+    void sendInLoop(const void* buf, size_t len);
+
     // socket fd;
     int fd_;
 

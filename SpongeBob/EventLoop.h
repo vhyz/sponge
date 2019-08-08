@@ -29,19 +29,23 @@ class EventLoop {
 
     void wakeUp();
 
-    void addTask(Functor functor);
+    void readWakeUpHandle();
 
     void runTasks();
 
-    void readWakeUpHandle();
+    void runInLoop(Functor functor);
 
-    bool runInLoop();
+    void queueInLoop(Functor functor);
 
     TimerId runAfter(double delay, CallBack cb);
 
     TimerId runEvery(double interval, CallBack cb);
 
     void cancel(TimerId timerId);
+
+    bool isInLoopThread() const {
+        return std::this_thread::get_id() == threadId_;
+    }
 
    private:
     Poller poller_;

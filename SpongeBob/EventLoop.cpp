@@ -57,11 +57,20 @@ void EventLoop::wakeUp() {
     write(wakeUpFd_, (char*)&one, sizeof(one));
 }
 
-void EventLoop::addTask(Functor functor) {
+void EventLoop::runInLoop(Functor functor) {
+    if (isInLoopThread()) {
+        functor();
+    } else {
+        queueInLoop(std::move(functor));
+    }
+}
+
+void EventLoop::queueInLoop(Functor functor) {
     {
-        std::lock_guard guard(mutex_);
+        std::lock_guard lock(mutex_);
         taskList_.push_back(std::move(functor));
     }
+
     wakeUp();
 }
 
@@ -75,8 +84,6 @@ void EventLoop::runTasks() {
         taskList[i]();
     }
 }
-
-bool EventLoop::runInLoop() { return threadId_ == std::this_thread::get_id(); }
 
 TimerId EventLoop::runAfter(double delay, CallBack cb) {
     TimeStamp when = addTime(getNowTimeStamp(), delay);

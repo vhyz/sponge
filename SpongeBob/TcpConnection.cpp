@@ -1,8 +1,10 @@
 #include "TcpConnection.h"
+#include <assert.h>
 #include <unistd.h>
 #include <iostream>
+#include <string_view>
 
-const int BufferSize = 4096;
+const int BufferSize = 65536;
 
 TcpConnection::TcpConnection(int fd, EventLoop* loop, sockaddr_in clientAddr)
     : fd_(fd),
@@ -24,60 +26,63 @@ TcpConnection::TcpConnection(int fd, EventLoop* loop, sockaddr_in clientAddr)
 // 析构函数，不可能由主线程运行，因为主线程已经cleanup
 TcpConnection::~TcpConnection() { close(fd_); }
 
-void TcpConnection::send(const std::string& msg) {
-    // FIXME 存在线程安全问题
-    // 若主线程连续调用此函数，outputBuffer_会出现安全问题
-    // 解决方法为上锁或者写一个更好的Buffer
-    outputBuffer_ += msg;
-    if (loop_->runInLoop()) {
-        sendInLoop();
+void TcpConnection::send(std::string_view msg) {
+    if (loop_->isInLoopThread()) {
+        sendInLoop(msg);
     } else {
-        loop_->addTask(
-            std::bind(&TcpConnection::sendInLoop, shared_from_this()));
+        void (TcpConnection::*fp)(std::string_view msg) =
+            &TcpConnection::sendInLoop;
+        loop_->runInLoop(std::bind(fp, shared_from_this(), msg));
     }
 }
 
-void TcpConnection::sendInLoop() {
+void TcpConnection::send(const void* buf, size_t len) {
+    send(std::string_view(static_cast<const char*>(buf), len));
+}
+
+void TcpConnection::sendInLoop(std::string_view msg) {
+    sendInLoop(msg.data(), msg.size());
+}
+
+void TcpConnection::sendInLoop(const void* buf, size_t len) {
     if (!connected) {
         return;
     }
+    ssize_t nwrite = 0;
+    size_t remaining = len;
+    bool faultError = false;
+    if (outputBuffer_.empty()) {
+        // 只尝试写一次
+        nwrite = ::write(fd_, buf, len);
 
-    int res = writeMsg();
-
-    if (res > 0) {
-        uint32_t events = channel_.getEvents();
-
-        if (outputBuffer_.size() > 0) {
-            // 缓冲区还有空间 未发送完毕
-            // 监控可写事件
-            channel_.setEvents(events | EPOLLOUT);
-            loop_->updateChannel(&channel_);
+        if (nwrite >= 0) {
+            remaining = len - nwrite;
+            if (remaining == 0 && sendCallBack_) {
+                loop_->queueInLoop(
+                    std::bind(sendCallBack_, shared_from_this()));
+            }
         } else {
-            // 取消可写事件
-            channel_.setEvents(events & (~EPOLLOUT));
-            if (sendCallBack_)
-                sendCallBack_(shared_from_this());
-            loop_->updateChannel(&channel_);
-
-            // 发送完数据关闭连接
-            if (half_close_)
-                handleClose();
+            nwrite = 0;
+            if (errno != EAGAIN) {
+                if (errno == EPIPE || errno == ECONNRESET) {
+                    faultError = true;
+                }
+            }
         }
-    } else if (res < 0) {
-        // 发生错误
-        handleError();
-    } else {
-        handleClose();
+    }
+
+    if (!faultError && remaining > 0) {
+        outputBuffer_.append(static_cast<const char*>(buf + nwrite), remaining);
+
+        uint32_t events = channel_.getEvents();
+        channel_.setEvents(events | EPOLLOUT);
+        loop_->updateChannel(&channel_);
     }
 }
 
 void TcpConnection::shutdown() {
-    if (loop_->runInLoop()) {
-        shutdownInLoop();
-    } else {
-        loop_->addTask(
-            std::bind(&TcpConnection::shutdownInLoop, shared_from_this()));
-    }
+    loop_->runInLoop(
+        std::bind(&TcpConnection::shutdownInLoop, shared_from_this()));
 }
 
 void TcpConnection::shutdownInLoop() {
@@ -106,9 +111,34 @@ void TcpConnection::handleRead() {
     }
 }
 
-void TcpConnection::handleWrite() { sendInLoop(); }
+void TcpConnection::handleWrite() {
+    ssize_t nwrite = write(fd_, outputBuffer_.data(), outputBuffer_.size());
+    if (nwrite > 0) {
+        outputBuffer_.erase(outputBuffer_.begin(),
+                            outputBuffer_.begin() + nwrite);
+        if (outputBuffer_.empty()) {
+            if (sendCallBack_) {
+                loop_->queueInLoop(
+                    std::bind(sendCallBack_, shared_from_this()));
+            }
 
-void TcpConnection::handleError() {}
+            uint32_t events = channel_.getEvents();
+            channel_.setEvents(events & ~EPOLLOUT);
+            loop_->updateChannel(&channel_);
+
+            if (half_close_) {
+                shutdownInLoop();
+            }
+        }
+    } else {
+        // FIXME 日志显示错误
+    }
+}
+
+void TcpConnection::handleError() {
+    // FIXME 日志记录错误
+    // 一般不会调用这个函数
+}
 
 void TcpConnection::handleClose() {
     std::cout << "TcpConnection::handleClose" << std::endl;
@@ -123,12 +153,8 @@ void TcpConnection::handleClose() {
 }
 
 void TcpConnection::forceClose() {
-    if (loop_->runInLoop()) {
-        handleClose();
-    } else {
-        loop_->addTask(
-            std::bind(&TcpConnection::handleClose, shared_from_this()));
-    }
+    loop_->runInLoop(
+        std::bind(&TcpConnection::handleClose, shared_from_this()));
 }
 
 void TcpConnection::connEstablished() {
@@ -168,57 +194,8 @@ int TcpConnection::readMsg() {
                 return -1;
             }
         } else {
-            // 客户端关闭连接 但是还是等待RDHUP事件再关闭连接
+            // 客户端关闭连接 但是还是等待检测到关闭事件再关闭连接
             return res;
         }
     }
-}
-
-int TcpConnection::writeMsg() {
-    int length = outputBuffer_.size();
-
-    int nwrite = 0;
-
-    int ret;
-
-    while (true) {
-        // 滑动指针的方式发送数据
-        int writeByets =
-            write(fd_, outputBuffer_.c_str() + nwrite, length - nwrite);
-
-        if (writeByets > 0) {
-            nwrite += writeByets;
-
-            if (nwrite == length) {
-                // 已写完
-                ret = nwrite;
-                break;
-            }
-
-        } else if (writeByets < 0) {
-            if (errno == EAGAIN) {
-                // 内核缓冲区已满
-                ret = nwrite;
-                break;
-            } else if (errno == EINTR) {
-                // 系统中断 再次尝试
-                continue;
-            } else if (errno == EPIPE) {
-                // 对端已关闭连接
-                ret = -1;
-                break;
-            } else {
-                ret = -1;
-                break;
-            }
-        } else {
-            // 等于0 应该不会出现等于0的情况
-
-            ret = 0;
-        }
-    }
-
-    outputBuffer_.erase(outputBuffer_.begin(), outputBuffer_.begin() + nwrite);
-
-    return ret;
 }

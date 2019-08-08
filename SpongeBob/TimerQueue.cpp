@@ -42,14 +42,14 @@ TimerId TimerQueue::addTimer(TimeStamp when, CallBack cb, double interval) {
     // 在移动timer前构造TimerId
     TimerId ret(timer);
 
-    loop_->addTask(
+    loop_->runInLoop(
         std::bind(&TimerQueue::addTimerInLoop, this, std::move(timer)));
 
     return ret;
 }
 
 void TimerQueue::cancel(TimerId timerId) {
-    loop_->addTask(
+    loop_->runInLoop(
         std::bind(&TimerQueue::cancelTimerInLoop, this, std::move(timerId)));
 }
 

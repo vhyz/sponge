@@ -106,7 +106,7 @@ void TcpServer::onNewConn() {
             connMap_[clientFd] = spConn;
             connCount++;
         }
-        ioLoop->addTask(std::bind(&TcpConnection::connEstablished, spConn));
+        ioLoop->runInLoop(std::bind(&TcpConnection::connEstablished, spConn));
     }
 }
 
