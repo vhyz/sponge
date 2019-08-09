@@ -2,6 +2,7 @@
 #define SPONGEBOB_TCPCONNECTION_H
 
 #include <arpa/inet.h>
+#include <netinet/tcp.h>
 #include <any>
 #include <functional>
 #include <memory>
@@ -71,6 +72,11 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     const std::any& getContext() { return context_; }
 
     bool isConnected() const { return connected; }
+
+    void setTcpNoDelay() {
+        int on = 1;
+        setsockopt(fd_, SOL_SOCKET, TCP_NODELAY, &on, sizeof(on));
+    }
 
    private:
     // 在loop线程中发送消息

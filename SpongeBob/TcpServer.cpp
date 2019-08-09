@@ -94,7 +94,7 @@ void TcpServer::onNewConn() {
         EventLoop* ioLoop = threadPool_.getNextLoop();
         spTcpConnection spConn =
             std::make_shared<TcpConnection>(clientFd, ioLoop, clientAddr);
-
+        spConn->setTcpNoDelay();
         spConn->setMessageCallBack(msgCallBack_);
         spConn->setSendCallBack(writeCompleteCallBack_);
         spConn->setConnCallBack(connCallBack_);
@@ -113,7 +113,8 @@ void TcpServer::onNewConn() {
 void TcpServer::removeConn(const spTcpConnection& spConn) {
     const sockaddr_in& clientAddr = spConn->getSockAddr();
     // std::cout << "Remove client from IP:" << inet_ntoa(clientAddr.sin_addr)
-    //         << ":" << ntohs(clientAddr.sin_port) << "  FD:" << spConn->getFd()
+    //         << ":" << ntohs(clientAddr.sin_port) << "  FD:" <<
+    //         spConn->getFd()
     //          << std::endl;
 
     std::lock_guard<std::mutex> lock(mutex_);
