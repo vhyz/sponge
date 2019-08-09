@@ -11,3 +11,4 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 add_subdirectory(SpongeBob)
 add_subdirectory(tests)
+add_subdirectory(examples)

@@ -70,6 +70,8 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
     const std::any& getContext() { return context_; }
 
+    bool isConnected() const { return connected; }
+
    private:
     // 在loop线程中发送消息
     void sendInLoop(std::string_view msg);

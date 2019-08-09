@@ -141,15 +141,18 @@ void TcpConnection::handleError() {
 }
 
 void TcpConnection::handleClose() {
-    std::cout << "TcpConnection::handleClose" << std::endl;
     if (!connected) {
         return;
     }
+    //std::cout << "TcpConnection::handleClose" << std::endl;
     connected = false;
 
     loop_->deleteChannle(&channel_);
+    auto guardThis = shared_from_this();
+    if (connCallBack_)
+        connCallBack_(guardThis);
     if (closeCallBack_)
-        closeCallBack_(shared_from_this());
+        closeCallBack_(guardThis);
 }
 
 void TcpConnection::forceClose() {

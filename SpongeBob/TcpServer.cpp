@@ -100,7 +100,7 @@ void TcpServer::onNewConn() {
         spConn->setConnCallBack(connCallBack_);
         spConn->setCloseCallBack(
             std::bind(&TcpServer::removeConn, this, std::placeholders::_1));
- 
+
         {
             std::lock_guard<std::mutex> lock(mutex_);
             connMap_[clientFd] = spConn;
@@ -113,8 +113,7 @@ void TcpServer::onNewConn() {
 void TcpServer::removeConn(const spTcpConnection& spConn) {
     const sockaddr_in& clientAddr = spConn->getSockAddr();
     // std::cout << "Remove client from IP:" << inet_ntoa(clientAddr.sin_addr)
-    //         << ":" << ntohs(clientAddr.sin_port) << "  FD:" <<
-    //         spConn->getFd()
+    //         << ":" << ntohs(clientAddr.sin_port) << "  FD:" << spConn->getFd()
     //          << std::endl;
 
     std::lock_guard<std::mutex> lock(mutex_);
