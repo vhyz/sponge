@@ -67,7 +67,7 @@ void EventLoop::runInLoop(Functor functor) {
 
 void EventLoop::queueInLoop(Functor functor) {
     {
-        std::lock_guard lock(mutex_);
+        std::lock_guard<std::mutex> lock(mutex_);
         taskList_.push_back(std::move(functor));
     }
 
@@ -77,7 +77,7 @@ void EventLoop::queueInLoop(Functor functor) {
 void EventLoop::runTasks() {
     std::vector<Functor> taskList;
     {
-        std::lock_guard guard(mutex_);
+        std::lock_guard<std::mutex> guard(mutex_);
         taskList.swap(taskList_);
     }
     for (size_t i = 0; i < taskList.size(); ++i) {

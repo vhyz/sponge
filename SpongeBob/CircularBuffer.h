@@ -1,6 +1,7 @@
 #ifndef SPONGEBOB_CIRCULARBUFFER_H
 #define SPONGEBOB_CIRCULARBUFFER_H
 
+#include <stddef.h>
 #include <list>
 
 template <typename T>
