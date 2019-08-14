@@ -5,6 +5,8 @@ compiler:
   - gcc
 os:
   - linux
+before-install:
+  - sudo apt-get update
 addons:
   apt:
     source:
