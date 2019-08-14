@@ -5,11 +5,9 @@ compiler:
   - gcc
 os:
   - linux
-before-install:
-  - sudo apt-get update
 addons:
   apt:
-    source:
+    sources:
       - ubuntu-toolchain-r-test
     packages:
       - g++-7
