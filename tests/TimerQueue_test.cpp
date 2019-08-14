@@ -1,9 +1,12 @@
+#include <iomanip>
 #include <iostream>
 #include "../SpongeBob/EventLoop.h"
 
 void print(const char* msg) {
-    std::cout << "TimeStamp: " << getNowTimeStamp() << "   " << msg
-              << std::endl;
+    std::cout << std::fixed << std::setprecision(6);
+    std::cout << "TimeStamp: "
+              << static_cast<double>(getNowTimeStamp()) / 1000000 << "   "
+              << msg << std::endl;
 }
 EventLoop loop;
 void cancel(TimerId timerId) { loop.cancel(timerId); }

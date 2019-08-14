@@ -3,13 +3,13 @@
 #include <iostream>
 
 void Channel::handleEvent() {
-    if (events_ & EPOLLRDHUP) {
+    if (revents_ & EPOLLRDHUP) {
         if (closeCallBack_)
             closeCallBack_();
-    } else if (events_ & (EPOLLIN | EPOLLPRI)) {
+    } else if (revents_ & (EPOLLIN | EPOLLPRI)) {
         if (readCallBack_)
             readCallBack_();
-    } else if (events_ & EPOLLOUT) {
+    } else if (revents_ & EPOLLOUT) {
         if (writeCallBack_)
             writeCallBack_();
     } else {

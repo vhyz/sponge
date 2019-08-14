@@ -8,7 +8,6 @@
 #include "Channel.h"
 #include "Timer.h"
 
-using TimerId = std::weak_ptr<Timer>;
 
 class TimerQueue {
    private:

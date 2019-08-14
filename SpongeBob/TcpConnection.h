@@ -8,8 +8,10 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include "CallBack.h"
 #include "Channel.h"
 #include "EventLoop.h"
+#include "InetAddress.h"
 
 class TcpConnection;
 
@@ -17,12 +19,8 @@ using spTcpConnection = std::shared_ptr<TcpConnection>;
 
 class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
    public:
-    using MessageCallBack =
-        std::function<void(const spTcpConnection&, std::string&)>;
-
-    using CallBack = std::function<void(const spTcpConnection&)>;
-
-    TcpConnection(int fd, EventLoop* loop, sockaddr_in clientAddr);
+    TcpConnection(int fd, EventLoop* loop, const InetAddress& localAddr,
+                  const InetAddress& peerAddr);
 
     ~TcpConnection();
 
@@ -47,19 +45,21 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
     EventLoop* getLoop() const { return loop_; }
 
-    const sockaddr_in& getSockAddr() const { return clientAddr_; }
+    const InetAddress& getLocalAddr() const { return localAddr_; }
 
-    void setSendCallBack(CallBack cb) { sendCallBack_ = std::move(cb); }
+    const InetAddress& getPeerAddr() const { return peerAddr_; }
 
-    void setCloseCallBack(CallBack cb) { closeCallBack_ = std::move(cb); }
+    void setSendCallBack(ConnectionCallBack cb) { sendCallBack_ = std::move(cb); }
 
-    void setErrorCallBack(CallBack cb) { errorCallBack_ = std::move(cb); }
+    void setCloseCallBack(ConnectionCallBack cb) { closeCallBack_ = std::move(cb); }
+
+    void setErrorCallBack(ConnectionCallBack cb) { errorCallBack_ = std::move(cb); }
 
     void setMessageCallBack(MessageCallBack cb) {
         messageCallBack_ = std::move(cb);
     }
 
-    void setConnCallBack(CallBack cb) { connCallBack_ = std::move(cb); }
+    void setConnCallBack(ConnectionCallBack cb) { connCallBack_ = std::move(cb); }
 
     void connEstablished();
 
@@ -93,8 +93,9 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     // 当前连接的事件
     Channel channel_;
 
-    // 客户端的addr结构
-    sockaddr_in clientAddr_;
+    // 本地与服务器的addr
+    InetAddress localAddr_;
+    InetAddress peerAddr_;
 
     // 输入缓冲
     std::string inputBuffer_;
@@ -108,11 +109,11 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     // 半关闭标志位
     bool half_close_;
 
-    CallBack sendCallBack_;
-    CallBack closeCallBack_;
-    CallBack errorCallBack_;
+    ConnectionCallBack sendCallBack_;
+    ConnectionCallBack closeCallBack_;
+    ConnectionCallBack errorCallBack_;
     MessageCallBack messageCallBack_;
-    CallBack connCallBack_;
+    ConnectionCallBack connCallBack_;
 
     std::any context_;
 

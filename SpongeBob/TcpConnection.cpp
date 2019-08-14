@@ -6,11 +6,14 @@
 
 const int BufferSize = 65536;
 
-TcpConnection::TcpConnection(int fd, EventLoop* loop, sockaddr_in clientAddr)
+TcpConnection::TcpConnection(int fd, EventLoop* loop,
+                             const InetAddress& localAddr,
+                             const InetAddress& peerAddr)
     : fd_(fd),
       loop_(loop),
       channel_(),
-      clientAddr_(clientAddr),
+      localAddr_(localAddr),
+      peerAddr_(peerAddr),
       inputBuffer_(),
       outputBuffer_(),
       connected(true),
@@ -72,6 +75,7 @@ void TcpConnection::sendInLoop(const void* buf, size_t len) {
     }
 
     if (!faultError && remaining > 0) {
+        std::cout << remaining << std::endl;
         outputBuffer_.append(static_cast<const char*>(buf + nwrite), remaining);
 
         uint32_t events = channel_.getEvents();
@@ -144,7 +148,7 @@ void TcpConnection::handleClose() {
     if (!connected) {
         return;
     }
-    //std::cout << "TcpConnection::handleClose" << std::endl;
+    // std::cout << "TcpConnection::handleClose" << std::endl;
     connected = false;
 
     loop_->deleteChannle(&channel_);
@@ -156,7 +160,7 @@ void TcpConnection::handleClose() {
 }
 
 void TcpConnection::forceClose() {
-    loop_->runInLoop(
+    loop_->queueInLoop(
         std::bind(&TcpConnection::handleClose, shared_from_this()));
 }
 

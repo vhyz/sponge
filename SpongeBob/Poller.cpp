@@ -39,7 +39,7 @@ void Poller::poll(std::vector<Channel*>& activeChannelList) {
         auto it = channelMap_.find(channel->getFd());
 
         if (it != channelMap_.end() && it->second == channel) {
-            channel->setEvents(events);
+            channel->setRevents(events);
             activeChannelList.push_back(channel);
         }
     }

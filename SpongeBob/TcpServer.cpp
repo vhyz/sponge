@@ -67,6 +67,8 @@ void TcpServer::listenPort(int port) {
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
+    localAddr_.setAddress(addr);
+
     if (bind(serverFd_, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0) {
         std::cout << "bind error" << std::endl;
         exit(1);
@@ -83,19 +85,22 @@ void TcpServer::onNewConn() {
     int clientFd;
     socklen_t len = sizeof(clientAddr);
     while ((clientFd = accept(serverFd_, (sockaddr*)&clientAddr, &len)) > 0) {
-        // std::cout << "New client from IP:" << inet_ntoa(clientAddr.sin_addr)
-        //          << ":" << ntohs(clientAddr.sin_port) << std::endl;
         if (connCount + 1 >= MAXCONN) {
             close(clientFd);
+            continue;
         }
 
         setNonblock(clientFd);
 
         EventLoop* ioLoop = threadPool_.getNextLoop();
+        InetAddress peer;
+        peer.setAddress(clientAddr);
+
         spTcpConnection spConn =
-            std::make_shared<TcpConnection>(clientFd, ioLoop, clientAddr);
+            std::make_shared<TcpConnection>(clientFd, ioLoop, localAddr_, peer);
         spConn->setTcpNoDelay();
-        spConn->setMessageCallBack(msgCallBack_);
+
+        spConn->setMessageCallBack(messageCallBack_);
         spConn->setSendCallBack(writeCompleteCallBack_);
         spConn->setConnCallBack(connCallBack_);
         spConn->setCloseCallBack(
@@ -111,12 +116,6 @@ void TcpServer::onNewConn() {
 }
 
 void TcpServer::removeConn(const spTcpConnection& spConn) {
-    const sockaddr_in& clientAddr = spConn->getSockAddr();
-    // std::cout << "Remove client from IP:" << inet_ntoa(clientAddr.sin_addr)
-    //         << ":" << ntohs(clientAddr.sin_port) << "  FD:" <<
-    //         spConn->getFd()
-    //          << std::endl;
-
     std::lock_guard<std::mutex> lock(mutex_);
     connMap_.erase(spConn->getFd());
     --connCount;

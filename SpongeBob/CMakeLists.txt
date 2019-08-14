@@ -3,11 +3,13 @@ add_library(
     SpongeBob
     BlockQueue.cpp
     Channel.cpp
-    EchoServer.cpp
+    Connector.cpp
     EventLoop.cpp
     EventLoopThread.cpp
     EventLoopThreadPool.cpp
+    InetAddress.cpp
     Poller.cpp
+    TcpClient.cpp
     TcpConnection.cpp
     TcpServer.cpp
     ThreadPool.cpp

@@ -1,0 +1,18 @@
+language: cpp
+sudo: false
+dist: trusty
+compiler:
+  - gcc
+os:
+  - linux
+addons:
+  apt:
+    source:
+      - ubuntu-toolchain-r-test
+    packages:
+    - g++-7
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make -j16

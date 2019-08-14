@@ -33,4 +33,6 @@ class Timer {
     double interval_;
 };
 
+using TimerId = std::weak_ptr<Timer>;
+
 #endif

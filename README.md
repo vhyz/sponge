@@ -2,7 +2,7 @@
 
 ## Introduction
 
-SpongeBob是一个基于Reactor模式的多线程服务器框架，是我在阅读陈硕老师的《Linux多线程服务端编程》后的一个练手项目。
+SpongeBob是一个基于Reactor模式的多线程非阻塞网络库，是我在阅读陈硕老师的《Linux多线程服务端编程》后的一个练手项目。
 
 ## Envoirment
 
@@ -27,7 +27,7 @@ SpongeBob是一个基于Reactor模式的多线程服务器框架，是我在阅�
 * setConnCallBack() 设置连接成功建立和断开时的回调函数 
 
 传入的回调函数签名为 void(const spTcpConnection&)
-* setMsgCallBack() 设置收到消息时的回调函数 
+* setMessageCallBack() 设置收到消息时的回调函数 
 
 传入的回调函数签名为 void(const spTcpConnection&, std::string&)
 * setWriteCompleteCallBack() 设置消息完全发送时的回调函数
@@ -103,6 +103,5 @@ int main() {
 
 ## ToDoList
 
-* 业务处理线程池
 * 更好用的Buffer缓冲区
 * 日志系统

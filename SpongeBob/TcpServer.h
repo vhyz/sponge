@@ -1,6 +1,7 @@
 #ifndef SPONGEBOB_TCPSERVER_H
 #define SPONGEBOB_TCPSERVER_H
 
+#include "CallBack.h"
 #include "Channel.h"
 #include "EventLoop.h"
 #include "EventLoopThreadPool.h"
@@ -8,19 +9,19 @@
 
 class TcpServer {
    public:
-    using CallBack = TcpConnection::CallBack;
-
-    using MsgCallBack = TcpConnection::MessageCallBack;
-
     TcpServer(EventLoop* loop, int port, int threadNum);
 
     ~TcpServer();
 
-    void setConnCallBack(CallBack cb) { connCallBack_ = std::move(cb); }
+    void setConnCallBack(ConnectionCallBack cb) {
+        connCallBack_ = std::move(cb);
+    }
 
-    void setMsgCallBack(MsgCallBack cb) { msgCallBack_ = std::move(cb); }
+    void setMessageCallBack(MessageCallBack cb) {
+        messageCallBack_ = std::move(cb);
+    }
 
-    void setWriteCompleteCallBack(CallBack cb) {
+    void setWriteCompleteCallBack(ConnectionCallBack cb) {
         writeCompleteCallBack_ = std::move(cb);
     }
 
@@ -50,9 +51,11 @@ class TcpServer {
     std::mutex mutex_;
 
     // 回调函数
-    CallBack connCallBack_;
-    MsgCallBack msgCallBack_;
-    CallBack writeCompleteCallBack_;
+    ConnectionCallBack connCallBack_;
+    MessageCallBack messageCallBack_;
+    ConnectionCallBack writeCompleteCallBack_;
+
+    InetAddress localAddr_;
 
     void setNonblock(int fd);
 
