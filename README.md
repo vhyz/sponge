@@ -1,5 +1,7 @@
 # SpongeBob: A C++ Multithread Network Library
 
+[![Build Status](https://travis-ci.org/vhyz/SpongeBob.svg?branch=master)](https://travis-ci.org/vhyz/SpongeBob)
+
 ## Introduction
 
 SpongeBob是一个基于Reactor模式的多线程非阻塞网络库，是我在阅读陈硕老师的《Linux多线程服务端编程》后的一个练手项目。
