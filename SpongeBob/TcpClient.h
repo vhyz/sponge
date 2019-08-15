@@ -29,6 +29,8 @@ class TcpClient {
    private:
     void newConnection(int fd);
 
+    void removeConnection(const spTcpConnection& spConn);
+
    private:
     EventLoop* loop_;
 

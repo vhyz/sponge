@@ -1,13 +1,12 @@
 #include "EventLoop.h"
 #include <sys/eventfd.h>
 #include <unistd.h>
-#include <iostream>
+#include "Logger.h"
 
 int createEventFd() {
     int fd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK);
     if (fd < 0) {
-        std::cout << "eventfd error" << std::endl;
-        exit(1);
+        FATAL("createEventFd() error");
     }
     return fd;
 }
@@ -30,7 +29,6 @@ EventLoop::EventLoop()
 
 void EventLoop::loop() {
     quit_ = false;
-    std::cout << "loop start" << std::endl;
     while (!quit_) {
         poller_.poll(avtiveChannelList_);
 

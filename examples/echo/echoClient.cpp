@@ -8,6 +8,7 @@ int main() {
     tcpClient.setConnectionCallBack([](const spTcpConnection& spConn) {
         std::cout << spConn->getLocalAddr().getIpAndPort() << std::endl;
         std::cout << spConn->getPeerAddr().getIpAndPort() << std::endl;
+        std::cout << spConn->getFd() << std::endl;
         spConn->send("hello world");
     });
     tcpClient.setMessageCallBack(

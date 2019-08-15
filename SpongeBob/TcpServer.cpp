@@ -3,7 +3,7 @@
 #include <strings.h>
 #include <sys/fcntl.h>
 #include <unistd.h>
-#include <iostream>
+#include "Logger.h"
 
 TcpServer::TcpServer(EventLoop* loop, int port, int threadNum)
     : serverFd_(-1),
@@ -16,8 +16,7 @@ TcpServer::TcpServer(EventLoop* loop, int port, int threadNum)
     serverFd_ = socket(AF_INET, SOCK_STREAM, 0);
 
     if (serverFd_ < 0) {
-        std::cout << "socket error" << std::endl;
-        exit(1);
+        FATAL("socket error");
     }
 
     setNonblock(serverFd_);
@@ -37,7 +36,8 @@ TcpServer::~TcpServer() {
 }
 
 void TcpServer::start() {
-    std::cout << "Tcp Server Start" << std::endl;
+    INFO("TcpServer port:%d, with %d IO threads start", localAddr_.getPort(),
+         threadPool_.getNumThread());
 
     threadPool_.start();
 
@@ -48,8 +48,7 @@ void TcpServer::setNonblock(int fd) {
     int flags = fcntl(fd, F_GETFL);
 
     if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) {
-        std::cout << "setNonblock error" << std::endl;
-        exit(1);
+        FATAL("setNonblock error");
     }
 }
 
@@ -70,13 +69,11 @@ void TcpServer::listenPort(int port) {
     localAddr_.setAddress(addr);
 
     if (bind(serverFd_, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0) {
-        std::cout << "bind error" << std::endl;
-        exit(1);
+        FATAL("bind error");
     }
 
     if (listen(serverFd_, SOMAXCONN) < 0) {
-        std::cout << "listen error" << std::endl;
-        exit(1);
+        FATAL("listen error");
     }
 }
 

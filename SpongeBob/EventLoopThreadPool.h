@@ -19,6 +19,8 @@ class EventLoopThreadPool {
     //启动线程池
     void start();
 
+    int getNumThread() const { return numThread_; }
+
    private:
     std::vector<std::unique_ptr<EventLoopThread>> threadList_;
 

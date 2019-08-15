@@ -1,6 +1,6 @@
 #include "TcpClient.h"
 #include <unistd.h>
-#include <iostream>
+#include "Logger.h"
 
 TcpClient::TcpClient(EventLoop* loop, const InetAddress& peer)
     : loop_(loop), peer_(peer), connector_(loop_, peer_) {
@@ -13,7 +13,7 @@ void TcpClient::newConnection(int fd) {
     socklen_t len = sizeof(addr);
     int err = getsockname(fd, (sockaddr*)&addr, &len);
     if (err < 0) {
-        std::cout << "TcpClient::newConnection getsockname" << std::endl;
+        ERROR("TcpClient::newConnection getsockname");
         close(fd);
         return;
     }
@@ -23,5 +23,13 @@ void TcpClient::newConnection(int fd) {
     conn_->setMessageCallBack(messageCallBack_);
     conn_->setConnCallBack(connectionCallBack_);
     conn_->setSendCallBack(writeCompleteCallBack_);
+    conn_->setCloseCallBack(
+        std::bind(&TcpClient::removeConnection, this, std::placeholders::_1));
+
     loop_->runInLoop(std::bind(&TcpConnection::connEstablished, conn_));
+}
+
+void TcpClient::removeConnection(const spTcpConnection& spConn) {
+    conn_.reset();
+    connector_.start();
 }
