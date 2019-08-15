@@ -148,7 +148,6 @@ void TcpConnection::handleClose() {
     if (!connected) {
         return;
     }
-    // std::cout << "TcpConnection::handleClose" << std::endl;
     connected = false;
 
     loop_->deleteChannle(&channel_);

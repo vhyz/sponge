@@ -8,6 +8,7 @@ add_library(
     EventLoopThread.cpp
     EventLoopThreadPool.cpp
     InetAddress.cpp
+    Logger.cpp
     Poller.cpp
     TcpClient.cpp
     TcpConnection.cpp
