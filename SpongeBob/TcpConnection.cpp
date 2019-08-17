@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <string_view>
+#include "Logger.h"
 
 const int BufferSize = 65536;
 
@@ -49,6 +50,7 @@ void TcpConnection::sendInLoop(std::string_view msg) {
 
 void TcpConnection::sendInLoop(const void* buf, size_t len) {
     if (!connected) {
+        WARN("connection disconnected");
         return;
     }
     ssize_t nwrite = 0;
@@ -59,6 +61,7 @@ void TcpConnection::sendInLoop(const void* buf, size_t len) {
         nwrite = ::write(fd_, buf, len);
 
         if (nwrite >= 0) {
+            INFO("sendInLoop %d bytes", len);
             remaining = len - nwrite;
             if (remaining == 0 && sendCallBack_) {
                 loop_->queueInLoop(

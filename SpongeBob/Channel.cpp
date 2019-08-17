@@ -1,8 +1,9 @@
 #include "Channel.h"
 #include <sys/epoll.h>
 #include <iostream>
-
+#include "Logger.h"
 void Channel::handleEvent() {
+    DEBUG("handleEvent");
     if (revents_ & EPOLLRDHUP) {
         if (closeCallBack_)
             closeCallBack_();
