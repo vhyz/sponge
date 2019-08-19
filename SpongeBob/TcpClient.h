@@ -8,7 +8,7 @@
 
 class TcpClient {
    public:
-    TcpClient(EventLoop* loop, const InetAddress& peer);
+    TcpClient(EventLoop* loop, const InetAddress& peer, bool reconnect = false);
 
     ~TcpClient() = default;
 
@@ -37,6 +37,8 @@ class TcpClient {
     const InetAddress peer_;
 
     Connector connector_;
+
+    bool reconnect_;
 
     spTcpConnection conn_;
 

@@ -2,8 +2,11 @@
 #include <unistd.h>
 #include "Logger.h"
 
-TcpClient::TcpClient(EventLoop* loop, const InetAddress& peer)
-    : loop_(loop), peer_(peer), connector_(loop_, peer_) {
+TcpClient::TcpClient(EventLoop* loop, const InetAddress& peer, bool reconnect)
+    : loop_(loop),
+      peer_(peer),
+      connector_(loop_, peer_),
+      reconnect_(reconnect) {
     connector_.setNewConnectionCallBack(
         std::bind(&TcpClient::newConnection, this, std::placeholders::_1));
 }
