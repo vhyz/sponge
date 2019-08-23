@@ -1,6 +1,21 @@
 #include <SpongeBob/Logger.h>
 #include <SpongeBob/TcpClient.h>
 #include <iostream>
+#include <string>
+
+class EchoClient {
+   public:
+   private:
+    void onRead(const spTcpConnection& spConn, std::string& str) {
+        std::cout << str << std::endl;
+    }
+
+    void onConnection(const spTcpConnection& spConn) {
+        
+    }
+
+    std::mutex mutex_;
+};
 
 int main() {
     setLogLevel(LOG_LEVEL_DEBUG);

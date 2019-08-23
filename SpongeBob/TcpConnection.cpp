@@ -34,9 +34,11 @@ void TcpConnection::send(std::string_view msg) {
     if (loop_->isInLoopThread()) {
         sendInLoop(msg);
     } else {
+        INFO("asyio");
+        INFO(std::string(msg).c_str());
         void (TcpConnection::*fp)(std::string_view msg) =
             &TcpConnection::sendInLoop;
-        loop_->runInLoop(std::bind(fp, shared_from_this(), msg));
+        loop_->runInLoop(std::bind(fp, shared_from_this(), std::string(msg)));
     }
 }
 

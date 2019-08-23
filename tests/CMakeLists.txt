@@ -20,3 +20,9 @@ add_executable(
     logger_test.cpp
 )
 target_link_libraries(logger_test SpongeBob)
+
+add_executable(
+    threadPool_test
+    threadPool_test.cpp
+)
+target_link_libraries(threadPool_test SpongeBob)

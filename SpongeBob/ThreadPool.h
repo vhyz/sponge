@@ -13,13 +13,15 @@ class ThreadPool {
    public:
     explicit ThreadPool(size_t threadPoolSize);
 
+    ~ThreadPool();
+
     void start();
 
     void putTask(CallBack cb);
 
    private:
     void threadFunc();
-    
+
     std::vector<std::thread> threadList_;
 
     BlockQueue taskQueue_;

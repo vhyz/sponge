@@ -91,20 +91,6 @@ int main() {
 
 ![](https://github.com/vhyz/SpongeBob/blob/master/img/4.png)
 
-### 内网测试
-
-内网测试指开两台服务器，一台服务器用来当客户端，另外一台服务器用来当服务器
-
-* 主线程+15个IO线程 并发1K个连接
-
-![](https://github.com/vhyz/SpongeBob/blob/master/img/6.png)
-
-* 主线程+15个IO线程 并发10K个连接
-
-![](https://github.com/vhyz/SpongeBob/blob/master/img/5.png)
-
-由内网测试结果可推测，传输速度受到了带宽的限制，导致了并发量无法继续上涨
-
 ## ToDoList
 
 * 更好用的Buffer缓冲区

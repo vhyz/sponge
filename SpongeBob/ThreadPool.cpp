@@ -4,6 +4,12 @@ ThreadPool::ThreadPool(size_t threadPoolSize) {
     threadList_.reserve(threadPoolSize);
 }
 
+ThreadPool::~ThreadPool() {
+    for (size_t i = 0; i < threadList_.size(); ++i) {
+        threadList_[i].join();
+    }
+}
+
 void ThreadPool::putTask(CallBack cb) { taskQueue_.put(std::move(cb)); }
 
 void ThreadPool::start() {

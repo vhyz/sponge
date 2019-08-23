@@ -1,4 +1,5 @@
 #include "Connector.h"
+#include <SpongeBob/Logger.h>
 #include <errno.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -24,7 +25,6 @@ void Connector::start() {
 
     int err = connect(fd_, (sockaddr*)&peer_.getSockaddr(), sizeof(peer_));
     if (err) {
-        std::cout << strerror(errno) << std::endl;
         channel_.setFd(fd_);
         channel_.setEvents(EPOLLOUT);
 
@@ -40,7 +40,7 @@ void Connector::handleWrite() {
     socklen_t len = sizeof(err);
     int ret = getsockopt(fd_, SOL_SOCKET, SO_ERROR, &err, &len);
     if (ret) {
-        std::cout << "Connector::handleWrite() getsockopt\n";
+        ERROR("Connector::handleWrite() getsockopt");
         return;
     }
     errno = err;
@@ -60,5 +60,5 @@ void Connector::handleWrite() {
 }
 
 void Connector::retry() {
-    retryTimer_ = loop_->runAfter(3, std::bind(&Connector::start, this));
+    retryTimer_ = loop_->runAfter(retryInterval, std::bind(&Connector::start, this));
 }
