@@ -1,5 +1,4 @@
 add_subdirectory(echo)
-add_subdirectory(add)
 
 add_executable(
     http_echo

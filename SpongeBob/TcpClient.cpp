@@ -28,11 +28,12 @@ void TcpClient::newConnection(int fd) {
     conn_->setSendCallBack(writeCompleteCallBack_);
     conn_->setCloseCallBack(
         std::bind(&TcpClient::removeConnection, this, std::placeholders::_1));
-
+    
     loop_->runInLoop(std::bind(&TcpConnection::connEstablished, conn_));
 }
 
 void TcpClient::removeConnection(const spTcpConnection& spConn) {
     conn_.reset();
-    connector_.start();
+    if(reconnect_)
+        connector_.start();
 }

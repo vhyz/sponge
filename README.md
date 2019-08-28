@@ -33,7 +33,7 @@ SpongeBob是一个基于Reactor模式的多线程非阻塞网络库，是我在�
 传入的回调函数签名为 void(const spTcpConnection&)
 * setMessageCallBack() 设置收到消息时的回调函数 
 
-传入的回调函数签名为 void(const spTcpConnection&, std::string&)
+传入的回调函数签名为 void(const spTcpConnection&, ChannelBuffer&)
 * setWriteCompleteCallBack() 设置消息完全发送时的回调函数
 
 传入的回调函数签名为 void(const spTcpConnection&)
@@ -41,24 +41,23 @@ SpongeBob是一个基于Reactor模式的多线程非阻塞网络库，是我在�
 比如写一个Echo服务器，我们需要设置收到消息时的回调函数
 
 ```C++
-#include "TcpServer.h"
-
-void echo(const spTcpConnection& spConn, std::string& msg) {
-    std::string s;
-    s.swap(msg);
-    spConn->send(s);
-}
+#include <SpongeBob/Logger.h>
+#include <SpongeBob/TcpServer.h>
+#include <iostream>
 
 int main() {
-    // 首先创建一个EventLoop
+    // 设置LOGGER日志等级
+    setLogLevel(LOG_LEVEL_DEBUG);
+    // 创建一个EventLoop
     EventLoop loop;
-
-    // 随后创建一个服务器，后两个参数分别为端口和IO线程数量
+    // 创建服务器，后两个参数分别为端口与IO线程数量
     TcpServer tcpServer(&loop, 5000, 7);
-
+    // 设置消息回调
     tcpServer.setMessageCallBack(
-        std::bind(&echo, std::placeholders::_1, std::placeholders::_2));
-
+        [](const spTcpConnection& spConn, ChannelBuffer& msg) {
+            INFO("handleRead %d bytes", msg.readableBytes());
+            spConn->send(msg.readAllBytesAsString());
+        });
     tcpServer.start();
     loop.loop();
 }

@@ -26,7 +26,7 @@ TcpServer::TcpServer(EventLoop* loop, int port, int threadNum)
     listenPort(port);
 
     serverChannel.setFd(serverFd_);
-    serverChannel.setEvents(EPOLLIN);
+    serverChannel.enableRead();
     serverChannel.setReadCallBack(std::bind(&TcpServer::onNewConn, this));
 }
 

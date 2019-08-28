@@ -46,6 +46,7 @@ void Connector::handleWrite() {
     errno = err;
 
     if (err) {
+        ERROR(strerror(errno));
         if (errorCallBack_) {
             errorCallBack_();
         }
@@ -60,5 +61,6 @@ void Connector::handleWrite() {
 }
 
 void Connector::retry() {
-    retryTimer_ = loop_->runAfter(retryInterval, std::bind(&Connector::start, this));
+    retryTimer_ =
+        loop_->runAfter(retryInterval, std::bind(&Connector::start, this));
 }

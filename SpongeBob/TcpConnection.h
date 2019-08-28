@@ -10,6 +10,7 @@
 #include <thread>
 #include "CallBack.h"
 #include "Channel.h"
+#include "ChannelBuffer.h"
 #include "EventLoop.h"
 #include "InetAddress.h"
 
@@ -49,17 +50,25 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
     const InetAddress& getPeerAddr() const { return peerAddr_; }
 
-    void setSendCallBack(ConnectionCallBack cb) { sendCallBack_ = std::move(cb); }
+    void setSendCallBack(ConnectionCallBack cb) {
+        sendCallBack_ = std::move(cb);
+    }
 
-    void setCloseCallBack(ConnectionCallBack cb) { closeCallBack_ = std::move(cb); }
+    void setCloseCallBack(ConnectionCallBack cb) {
+        closeCallBack_ = std::move(cb);
+    }
 
-    void setErrorCallBack(ConnectionCallBack cb) { errorCallBack_ = std::move(cb); }
+    void setErrorCallBack(ConnectionCallBack cb) {
+        errorCallBack_ = std::move(cb);
+    }
 
     void setMessageCallBack(MessageCallBack cb) {
         messageCallBack_ = std::move(cb);
     }
 
-    void setConnCallBack(ConnectionCallBack cb) { connCallBack_ = std::move(cb); }
+    void setConnCallBack(ConnectionCallBack cb) {
+        connCallBack_ = std::move(cb);
+    }
 
     void connEstablished();
 
@@ -97,11 +106,9 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     InetAddress localAddr_;
     InetAddress peerAddr_;
 
-    // 输入缓冲
-    std::string inputBuffer_;
-
-    // 输出缓冲
-    std::string outputBuffer_;
+    // 输入缓冲区与输出缓冲区
+    ChannelBuffer inputBuffer_;
+    ChannelBuffer outputBuffer_;
 
     // 是否连接的标志位
     bool connected;

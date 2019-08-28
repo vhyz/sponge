@@ -25,6 +25,14 @@ class Channel {
 
     void setRevents(int revents) { revents_ = revents; }
 
+    void enableRead() { events_ |= EPOLLIN; }
+
+    void enableWrite() { events_ |= EPOLLOUT; }
+
+    void disableRead() { events_ &= ~EPOLLIN; }
+
+    void disableWrite() { events_ &= ~EPOLLOUT; }
+
     void setReadCallBack(EventCallBack cb) { readCallBack_ = std::move(cb); }
 
     void setWriteCallBack(EventCallBack cb) { writeCallBack_ = std::move(cb); }

@@ -26,3 +26,9 @@ add_executable(
     threadPool_test.cpp
 )
 target_link_libraries(threadPool_test SpongeBob)
+
+add_executable(
+    ChannelBuffer_test
+    ChannelBuffer_test.cpp
+)
+target_link_libraries(ChannelBuffer_test SpongeBob)

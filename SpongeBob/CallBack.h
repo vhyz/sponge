@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include "ChannelBuffer.h"
 
 class TcpConnection;
 
@@ -13,6 +14,6 @@ using CallBack = std::function<void()>;
 using ConnectionCallBack = std::function<void(const spTcpConnection&)>;
 
 using MessageCallBack =
-    std::function<void(const spTcpConnection&, std::string&)>;
+    std::function<void(const spTcpConnection&, ChannelBuffer&)>;
 
 #endif

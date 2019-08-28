@@ -34,7 +34,6 @@ void TcpConnection::send(std::string_view msg) {
     if (loop_->isInLoopThread()) {
         sendInLoop(msg);
     } else {
-        INFO("asyio");
         INFO(std::string(msg).c_str());
         void (TcpConnection::*fp)(std::string_view msg) =
             &TcpConnection::sendInLoop;
@@ -58,7 +57,7 @@ void TcpConnection::sendInLoop(const void* buf, size_t len) {
     ssize_t nwrite = 0;
     size_t remaining = len;
     bool faultError = false;
-    if (outputBuffer_.empty()) {
+    if (!outputBuffer_.readable()) {
         // 只尝试写一次
         nwrite = ::write(fd_, buf, len);
 
@@ -80,8 +79,7 @@ void TcpConnection::sendInLoop(const void* buf, size_t len) {
     }
 
     if (!faultError && remaining > 0) {
-        std::cout << remaining << std::endl;
-        outputBuffer_.append(static_cast<const char*>(buf + nwrite), remaining);
+        outputBuffer_.append(static_cast<const char*>(buf) + nwrite, remaining);
 
         uint32_t events = channel_.getEvents();
         channel_.setEvents(events | EPOLLOUT);
@@ -99,7 +97,7 @@ void TcpConnection::shutdownInLoop() {
         return;
     }
 
-    if (outputBuffer_.size() > 0) {
+    if (outputBuffer_.readable()) {
         half_close_ = true;
     } else {
         handleClose();
@@ -121,11 +119,10 @@ void TcpConnection::handleRead() {
 }
 
 void TcpConnection::handleWrite() {
-    ssize_t nwrite = write(fd_, outputBuffer_.data(), outputBuffer_.size());
+    ssize_t nwrite = write(fd_, outputBuffer_.readPtr(), outputBuffer_.readableBytes());
     if (nwrite > 0) {
-        outputBuffer_.erase(outputBuffer_.begin(),
-                            outputBuffer_.begin() + nwrite);
-        if (outputBuffer_.empty()) {
+        outputBuffer_.readNBytes(nwrite);
+        if (!outputBuffer_.readable()) {
             if (sendCallBack_) {
                 loop_->queueInLoop(
                     std::bind(sendCallBack_, shared_from_this()));

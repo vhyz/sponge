@@ -24,8 +24,8 @@ int main() {
     TcpServer tcpServer(&loop, 5000, 7);
     std::cout << msg.size();
     tcpServer.setMessageCallBack(
-        [&](const spTcpConnection& spConn, std::string& m) {
-            m.clear();
+        [&](const spTcpConnection& spConn, ChannelBuffer& buffer) {
+            buffer.readAllBytes();
             spConn->send(msg);
         });
     tcpServer.start();
