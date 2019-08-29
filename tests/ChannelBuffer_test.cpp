@@ -35,7 +35,15 @@ int main() {
 
     buffer.readAllBytes();
     printBufferInfo(buffer);
+
     buffer.shrink();
     printBufferInfo(buffer);
     printBuffer(buffer);
+
+    buffer.appendInt32(10);
+    printBufferInfo(buffer);
+    std::cout << buffer.peekInt32() << std::endl;
+    printBufferInfo(buffer);
+    std::cout << buffer.readInt32() << std::endl;
+    printBufferInfo(buffer);
 }

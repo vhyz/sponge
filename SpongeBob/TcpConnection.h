@@ -21,7 +21,8 @@ using spTcpConnection = std::shared_ptr<TcpConnection>;
 class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
    public:
     TcpConnection(int fd, EventLoop* loop, const InetAddress& localAddr,
-                  const InetAddress& peerAddr);
+                  const InetAddress& peerAddr,
+                  size_t readHighWaterMark = 1024 * 1024 * 4);
 
     ~TcpConnection();
 
@@ -41,6 +42,10 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
     // 强制关闭
     void forceClose();
+
+    void setReadHighWaterMark(size_t readHighWaterMark) {
+        readHighWaterMark_ = readHighWaterMark;
+    }
 
     int getFd() const { return fd_; }
 
@@ -68,6 +73,10 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
     void setConnCallBack(ConnectionCallBack cb) {
         connCallBack_ = std::move(cb);
+    }
+
+    void setReadHighWaterCallBack(ConnectionCallBack cb) {
+        readHighWaterCallBack_ = std::move(cb);
     }
 
     void connEstablished();
@@ -116,11 +125,14 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     // 半关闭标志位
     bool half_close_;
 
+    size_t readHighWaterMark_;
+
     ConnectionCallBack sendCallBack_;
     ConnectionCallBack closeCallBack_;
     ConnectionCallBack errorCallBack_;
     MessageCallBack messageCallBack_;
     ConnectionCallBack connCallBack_;
+    ConnectionCallBack readHighWaterCallBack_;
 
     std::any context_;
 

@@ -12,7 +12,13 @@ class TcpClient {
 
     ~TcpClient() = default;
 
-    void start() { connector_.start(); }
+    void connect() { connector_.start(); }
+
+    void disconnect() {
+        if (conn_) {
+            conn_->shutdown();
+        }
+    }
 
     void setMessageCallBack(MessageCallBack cb) {
         messageCallBack_ = std::move(cb);

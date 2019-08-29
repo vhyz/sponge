@@ -2,18 +2,21 @@
 #include <SpongeBob/Logger.h>
 #include <SpongeBob/TcpClient.h>
 #include <iostream>
-#include <string>
+#include <mutex>
+#include "codec.h"
 
 using namespace std::placeholders;
 
-class EchoClient {
+class ChatClient {
    public:
-    EchoClient(EventLoop* loop, const InetAddress& serverAddress)
-        : client_(loop, serverAddress) {
+    ChatClient(EventLoop* loop, const InetAddress& serverAddress,
+               bool reconnect = false)
+        : client_(loop, serverAddress, reconnect),
+          codec_(std::bind(&ChatClient::onMessage, this, _1, _2)) {
         client_.setConnectionCallBack(
-            std::bind(&EchoClient::onConnection, this, _1));
+            std::bind(&ChatClient::onConnection, this, _1));
         client_.setMessageCallBack(
-            std::bind(&EchoClient::onMessage, this, _1, _2));
+            std::bind(&LengthHeaderCodec::onMessage, &codec_, _1, _2));
     }
 
     void onConnection(const spTcpConnection& spConn) {
@@ -21,8 +24,8 @@ class EchoClient {
              spConn->getPeerAddr().getIpAndPort().c_str(),
              spConn->getLocalAddr().getIpAndPort().c_str(),
              spConn->isConnected() ? "up" : "down");
-        std::lock_guard<std::mutex> lock(mutex_);
 
+        std::lock_guard<std::mutex> lock(mutex_);
         if (spConn->isConnected()) {
             conn_ = spConn;
         } else {
@@ -30,14 +33,14 @@ class EchoClient {
         }
     }
 
-    void onMessage(const spTcpConnection spConn, ChannelBuffer& buffer) {
-        std::cout << "recv msg: " << buffer.readAllBytesAsString() << std::endl;
+    void onMessage(const spTcpConnection& spConn, const std::string& msg) {
+        std::cout << "recv message: " << msg << std::endl;
     }
 
     void send(const std::string& msg) {
         std::lock_guard<std::mutex> lock(mutex_);
         if (conn_) {
-            conn_->send(msg);
+            codec_.send(conn_, msg);
         }
     }
 
@@ -47,6 +50,8 @@ class EchoClient {
 
    private:
     TcpClient client_;
+
+    LengthHeaderCodec codec_;
 
     spTcpConnection conn_;
 
@@ -60,15 +65,15 @@ int main(int argc, char** argv) {
 
         uint16_t port = atoi(argv[2]);
         InetAddress serverAddress(argv[1], port);
-
-        EchoClient client(loopThread.getEventLoop(), serverAddress);
+        std::cout << argv[1] << std::endl;
+        ChatClient client(loopThread.getEventLoop(), serverAddress);
+        std::cout << argv[1] << std::endl;
         client.connect();
-
         std::string line;
         while (getline(std::cin, line)) {
             client.send(line);
         }
     } else {
-        printf("Usage: %s ip port\n", argv[0]);
+        printf("Usage: %s ip port", argv[0]);
     }
 }

@@ -21,6 +21,14 @@ Connector::Connector(EventLoop* loop, const InetAddress& peer)
 Connector::~Connector() { loop_->cancel(retryTimer_); }
 
 void Connector::start() {
+    if (loop_->isInLoopThread()) {
+        startInLoop();
+    } else {
+        loop_->runInLoop(std::bind(&Connector::startInLoop, this));
+    }
+}
+
+void Connector::startInLoop() {
     fd_ = createSocket();
 
     int err = connect(fd_, (sockaddr*)&peer_.getSockaddr(), sizeof(peer_));

@@ -89,6 +89,23 @@ class ChannelBuffer {
         return n;
     }
 
+    void appendInt64(int64_t n) {
+        int64_t be = htobe64(n);
+        append(&be, sizeof(int64_t));
+    }
+
+    void appendInt32(int32_t n) {
+        int32_t be = htobe32(n);
+        append(&be, sizeof(int32_t));
+    }
+
+    void appendInt16(int16_t n) {
+        int16_t be = htobe16(n);
+        append(&be, sizeof(int16_t));
+    }
+
+    void appendInt8(int8_t n) { append(&n, sizeof(int8_t)); }
+
     void readNBytes(size_t n) {
         assert(readableBytes() >= n);
 

@@ -5,11 +5,12 @@
 #include <string_view>
 #include "Logger.h"
 
-const int BufferSize = 65536;
+static const int BufferSize = 65536;
 
 TcpConnection::TcpConnection(int fd, EventLoop* loop,
                              const InetAddress& localAddr,
-                             const InetAddress& peerAddr)
+                             const InetAddress& peerAddr,
+                             size_t readHighWaterMark)
     : fd_(fd),
       loop_(loop),
       channel_(),
@@ -18,7 +19,8 @@ TcpConnection::TcpConnection(int fd, EventLoop* loop,
       inputBuffer_(),
       outputBuffer_(),
       connected(true),
-      half_close_(false) {
+      half_close_(false),
+      readHighWaterMark_(readHighWaterMark) {
     channel_.setFd(fd_);
     channel_.setEvents(EPOLLIN);
     channel_.setCloseCallBack(std::bind(&TcpConnection::handleClose, this));
@@ -34,7 +36,6 @@ void TcpConnection::send(std::string_view msg) {
     if (loop_->isInLoopThread()) {
         sendInLoop(msg);
     } else {
-        INFO(std::string(msg).c_str());
         void (TcpConnection::*fp)(std::string_view msg) =
             &TcpConnection::sendInLoop;
         loop_->runInLoop(std::bind(fp, shared_from_this(), std::string(msg)));
@@ -119,7 +120,8 @@ void TcpConnection::handleRead() {
 }
 
 void TcpConnection::handleWrite() {
-    ssize_t nwrite = write(fd_, outputBuffer_.readPtr(), outputBuffer_.readableBytes());
+    ssize_t nwrite =
+        write(fd_, outputBuffer_.readPtr(), outputBuffer_.readableBytes());
     if (nwrite > 0) {
         outputBuffer_.readNBytes(nwrite);
         if (!outputBuffer_.readable()) {

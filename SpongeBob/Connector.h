@@ -27,6 +27,8 @@ class Connector {
 
     void retry();
 
+    void startInLoop();
+    
     EventLoop* loop_;
 
     Channel channel_;
