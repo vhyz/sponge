@@ -5,6 +5,8 @@
 #include <string_view>
 #include "Logger.h"
 
+namespace SpongeBob {
+
 static const int BufferSize = 65536;
 
 TcpConnection::TcpConnection(int fd, EventLoop* loop,
@@ -209,3 +211,5 @@ int TcpConnection::readMsg() {
         }
     }
 }
+
+}  // namespace SpongeBob

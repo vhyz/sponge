@@ -6,6 +6,7 @@
 #include "codec.h"
 
 using namespace std::placeholders;
+using namespace SpongeBob;
 
 class ChatClient {
    public:

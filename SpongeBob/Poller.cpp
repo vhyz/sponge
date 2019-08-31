@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <iostream>
 
+namespace SpongeBob {
+
 const int InitEventListSize = 16;
 const int TimeOut = 1000;
 
@@ -93,3 +95,5 @@ void Poller::deleteChannel(Channel* channel) {
         exit(1);
     }
 }
+
+}  // namespace SpongeBob

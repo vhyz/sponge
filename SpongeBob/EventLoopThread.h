@@ -6,6 +6,8 @@
 #include <thread>
 #include "EventLoop.h"
 
+namespace SpongeBob {
+
 class EventLoopThread {
    public:
     EventLoopThread();
@@ -30,4 +32,5 @@ class EventLoopThread {
     void threadFunc();
 };
 
+}  // namespace SpongeBob
 #endif

@@ -7,6 +7,8 @@
 #include "EventLoop.h"
 #include "EventLoopThread.h"
 
+namespace SpongeBob {
+
 class EventLoopThreadPool {
    public:
     EventLoopThreadPool(EventLoop* mainLoop, int numThread);
@@ -33,4 +35,6 @@ class EventLoopThreadPool {
     // 下一个线程的索引
     int next_;
 };
+
+}  // namespace SpongeBob
 #endif

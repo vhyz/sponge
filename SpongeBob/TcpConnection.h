@@ -14,6 +14,8 @@
 #include "EventLoop.h"
 #include "InetAddress.h"
 
+namespace SpongeBob {
+
 class TcpConnection;
 
 using spTcpConnection = std::shared_ptr<TcpConnection>;
@@ -141,4 +143,5 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     int writeMsg();
 };
 
+}  // namespace SpongeBob
 #endif

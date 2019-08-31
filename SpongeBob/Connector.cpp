@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <iostream>
 
+namespace SpongeBob {
+
 int createSocket() {
     int fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
     return fd;
@@ -72,3 +74,5 @@ void Connector::retry() {
     retryTimer_ =
         loop_->runAfter(retryInterval, std::bind(&Connector::start, this));
 }
+
+}  // namespace SpongeBob

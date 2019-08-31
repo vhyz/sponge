@@ -2,6 +2,8 @@
 #define SPONGEBOB_LOGGER_H
 #include <stdio.h>
 
+namespace SpongeBob {
+
 enum LOG_LEVEL {
     LOG_LEVEL_DEBUG = 0,
     LOG_LEVEL_INFO,
@@ -26,7 +28,7 @@ void log_base(const char* file, int line, const char* level, bool abort,
 #define INFO(fmt, ...)              \
     if (logLevel <= LOG_LEVEL_INFO) \
     log_base(__FILE__, __LINE__, "INFO", false, fmt, ##__VA_ARGS__)
-#define WARN(fmt, ...)               \
+#define WARN(fmt, ...)              \
     if (logLevel <= LOG_LEVEL_WARN) \
     log_base(__FILE__, __LINE__, "WARN", false, fmt, ##__VA_ARGS__)
 #define ERROR(fmt, ...)              \
@@ -36,4 +38,5 @@ void log_base(const char* file, int line, const char* level, bool abort,
     if (logLevel <= LOG_LEVEL_FATAL) \
     log_base(__FILE__, __LINE__, "FATAL", true, fmt, ##__VA_ARGS__)
 
+}  // namespace SpongeBob
 #endif

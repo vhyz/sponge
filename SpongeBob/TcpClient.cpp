@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include "Logger.h"
 
+namespace SpongeBob {
+
 TcpClient::TcpClient(EventLoop* loop, const InetAddress& peer, bool reconnect)
     : loop_(loop),
       peer_(peer),
@@ -28,12 +30,14 @@ void TcpClient::newConnection(int fd) {
     conn_->setSendCallBack(writeCompleteCallBack_);
     conn_->setCloseCallBack(
         std::bind(&TcpClient::removeConnection, this, std::placeholders::_1));
-    
+
     loop_->runInLoop(std::bind(&TcpConnection::connEstablished, conn_));
 }
 
 void TcpClient::removeConnection(const spTcpConnection& spConn) {
     conn_.reset();
-    if(reconnect_)
+    if (reconnect_)
         connector_.start();
 }
+
+}  // namespace SpongeBob

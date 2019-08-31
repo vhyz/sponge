@@ -1,5 +1,7 @@
 #include "BlockQueue.h"
 
+namespace SpongeBob {
+
 void BlockQueue::put(CallBack cb) {
     std::lock_guard<std::mutex> lock(mutex_);
     taskQueue_.push(std::move(cb));
@@ -20,3 +22,5 @@ size_t BlockQueue::size() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return taskQueue_.size();
 }
+
+}  // namespace SpongeBob

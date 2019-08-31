@@ -6,6 +6,8 @@
 #include <vector>
 #include "Channel.h"
 
+namespace SpongeBob {
+
 class Poller {
    public:
     Poller();
@@ -31,4 +33,5 @@ class Poller {
     std::map<int, Channel*> channelMap_;
 };
 
+}  // namespace SpongeBob
 #endif

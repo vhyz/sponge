@@ -4,6 +4,8 @@
 #include <sys/time.h>
 #include <time.h>
 
+namespace SpongeBob {
+
 #ifndef NDEBUG
 LOG_LEVEL logLevel = LOG_LEVEL_DEBUG;
 #else
@@ -42,3 +44,5 @@ void log_base(const char* file, int line, const char* level, bool abort,
         exit(127);
     }
 }
+
+}  // namespace SpongeBob

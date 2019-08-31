@@ -8,6 +8,9 @@
 #include "Channel.h"
 #include "Timer.h"
 
+namespace SpongeBob {
+
+class EventLoop;
 
 class TimerQueue {
    private:
@@ -51,5 +54,7 @@ class TimerQueue {
     // 定时器最近任务发生的时间
     TimeStamp nextExpiration_;
 };
+
+}  // namespace SpongeBob
 
 #endif

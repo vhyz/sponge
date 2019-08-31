@@ -43,9 +43,9 @@ SpongeBob是一个基于Reactor模式的多线程非阻塞网络库，是我在�
 ```C++
 #include <SpongeBob/Logger.h>
 #include <SpongeBob/TcpServer.h>
-#include <iostream>
 
 int main() {
+    using namespace SpongeBob;
     // 设置LOGGER日志等级
     setLogLevel(LOG_LEVEL_DEBUG);
     // 创建一个EventLoop

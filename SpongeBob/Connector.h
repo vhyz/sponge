@@ -6,6 +6,8 @@
 #include "TcpConnection.h"
 #include "Timer.h"
 
+namespace SpongeBob {
+
 class Connector {
    public:
     Connector(EventLoop* loop, const InetAddress& peer);
@@ -28,7 +30,7 @@ class Connector {
     void retry();
 
     void startInLoop();
-    
+
     EventLoop* loop_;
 
     Channel channel_;
@@ -45,5 +47,7 @@ class Connector {
 
     static double retryInterval;
 };
+
+}  // namespace SpongeBob
 
 #endif

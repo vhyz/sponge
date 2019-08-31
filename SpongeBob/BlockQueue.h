@@ -6,6 +6,8 @@
 #include <queue>
 #include "CallBack.h"
 
+namespace SpongeBob {
+
 class BlockQueue {
    public:
     void put(CallBack cb);
@@ -21,5 +23,7 @@ class BlockQueue {
 
     std::queue<CallBack> taskQueue_;
 };
+
+}  // namespace SpongeBob
 
 #endif

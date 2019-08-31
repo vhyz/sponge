@@ -1,5 +1,7 @@
 #include "EventLoopThread.h"
 
+namespace SpongeBob {
+
 EventLoopThread::EventLoopThread() : thread_(), loop_(nullptr) {}
 
 EventLoopThread::~EventLoopThread() {
@@ -29,3 +31,5 @@ void EventLoopThread::threadFunc() {
     }
     loop_->loop();
 }
+
+}  // namespace SpongeBob

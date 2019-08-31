@@ -4,7 +4,7 @@
 #include <sys/epoll.h>
 #include <functional>
 
-class EventLoop;
+namespace SpongeBob {
 
 class Channel {
    public:
@@ -53,5 +53,7 @@ class Channel {
     EventCallBack errorCallBack_;
     EventCallBack closeCallBack_;
 };
+
+}  // namespace SpongeBob
 
 #endif

@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include <list>
 
+namespace SpongeBob {
+
 template <typename T>
 class CircularBuffer {
    public:
@@ -29,4 +31,5 @@ class CircularBuffer {
     size_t capacity_;
 };
 
+}  // namespace SpongeBob
 #endif

@@ -2,6 +2,8 @@
 #include <iostream>
 #include "../SpongeBob/EventLoop.h"
 
+using namespace SpongeBob;
+
 void print(const char* msg) {
     std::cout << std::fixed << std::setprecision(6);
     std::cout << "TimeStamp: "

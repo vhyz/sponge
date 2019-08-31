@@ -1,6 +1,8 @@
 #include <iostream>
 #include "../SpongeBob/TcpServer.h"
 
+using namespace SpongeBob;
+
 int main() {
     std::string msg =
         "HTTP/1.1 200 OK\r\n"

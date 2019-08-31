@@ -2,6 +2,8 @@
 #include <SpongeBob/Logger.h>
 #include <SpongeBob/ThreadPool.h>
 
+using namespace SpongeBob;
+
 int main() {
     ThreadPool pool(5);
     pool.start();

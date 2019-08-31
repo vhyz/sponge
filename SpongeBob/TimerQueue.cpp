@@ -9,6 +9,8 @@
 #include <iostream>
 #include "EventLoop.h"
 
+namespace SpongeBob {
+
 int create_timerfd() {
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
 
@@ -145,3 +147,5 @@ void TimerQueue::handleRead() {
     nextExpiration_ = -1;
     update(entries, now);
 }
+
+}  // namespace SpongeBob

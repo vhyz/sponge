@@ -2,6 +2,8 @@
 #include <arpa/inet.h>
 #include <strings.h>
 
+namespace SpongeBob {
+
 InetAddress::InetAddress(const std::string& ip, uint16_t port) {
     bzero(&addr_, sizeof(addr_));
     addr_.sin_family = AF_INET;
@@ -22,3 +24,5 @@ std::string InetAddress::getIpAndPort() const {
     ip.push_back(':');
     return ip + std::to_string(getPort());
 }
+
+}  // namespace SpongeBob

@@ -1,5 +1,7 @@
 #include <SpongeBob/Logger.h>
 
+using namespace SpongeBob;
+
 int main() {
     setLogLevel(LOG_LEVEL_ERROR);
     DEBUG("%s", "DEBUG");

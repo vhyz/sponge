@@ -5,6 +5,7 @@
 #include <string>
 
 using namespace std::placeholders;
+using namespace SpongeBob;
 
 class EchoClient {
    public:

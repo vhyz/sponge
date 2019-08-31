@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <iostream>
 
+using namespace SpongeBob;
+
 void printBufferInfo(ChannelBuffer& buffer) {
     std::cout << "capacity(): " << buffer.capacity() << std::endl;
     std::cout << "readable(): " << buffer.readable() << std::endl;

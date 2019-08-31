@@ -1,5 +1,7 @@
 #include "EventLoopThreadPool.h"
 
+namespace SpongeBob {
+
 EventLoopThreadPool::EventLoopThreadPool(EventLoop* mainLoop, int numThread)
     : mainLoop_(mainLoop), numThread_(numThread), next_(0) {
     threadList_.resize(numThread_);
@@ -27,3 +29,5 @@ EventLoop* EventLoopThreadPool::getNextLoop() {
         return mainLoop_;
     }
 }
+
+}  // namespace SpongeBob

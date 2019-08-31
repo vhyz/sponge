@@ -6,6 +6,8 @@
 #include "EventLoop.h"
 #include "TcpConnection.h"
 
+namespace SpongeBob {
+
 class TcpClient {
    public:
     TcpClient(EventLoop* loop, const InetAddress& peer, bool reconnect = false);
@@ -52,5 +54,7 @@ class TcpClient {
     ConnectionCallBack connectionCallBack_;
     ConnectionCallBack writeCompleteCallBack_;
 };
+
+}  // namespace SpongeBob
 
 #endif

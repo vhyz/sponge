@@ -7,6 +7,8 @@
 #include "EventLoopThreadPool.h"
 #include "TcpConnection.h"
 
+namespace SpongeBob {
+
 class TcpServer {
    public:
     TcpServer(EventLoop* loop, int port, int threadNum);
@@ -70,4 +72,5 @@ class TcpServer {
     static const size_t MAXCONN = 30000;
 };
 
+}  // namespace SpongeBob
 #endif

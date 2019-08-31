@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include "Logger.h"
 
+namespace SpongeBob {
+
 int createEventFd() {
     int fd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK);
     if (fd < 0) {
@@ -96,3 +98,5 @@ TimerId EventLoop::runEvery(double interval, CallBack cb) {
 void EventLoop::cancel(TimerId timerId) {
     timerQueue_.cancel(std::move(timerId));
 }
+
+}  // namespace SpongeBob

@@ -9,6 +9,8 @@
 #include "BlockQueue.h"
 #include "CallBack.h"
 
+namespace SpongeBob {
+
 class ThreadPool {
    public:
     explicit ThreadPool(size_t threadPoolSize);
@@ -26,5 +28,7 @@ class ThreadPool {
 
     BlockQueue taskQueue_;
 };
+
+}  // namespace SpongeBob
 
 #endif

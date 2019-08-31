@@ -5,6 +5,8 @@
 #include <functional>
 #include <string>
 
+using namespace SpongeBob;
+
 class LengthHeaderCodec {
    public:
     using StringMessageCallBack =

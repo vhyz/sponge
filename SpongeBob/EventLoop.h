@@ -11,6 +11,8 @@
 #include "Timer.h"
 #include "TimerQueue.h"
 
+namespace SpongeBob {
+
 class EventLoop {
    public:
     using Functor = std::function<void()>;
@@ -69,4 +71,5 @@ class EventLoop {
     TimerQueue timerQueue_;
 };
 
+}  // namespace SpongeBob
 #endif

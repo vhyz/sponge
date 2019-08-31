@@ -1,5 +1,7 @@
 #include "ThreadPool.h"
 
+namespace SpongeBob {
+
 ThreadPool::ThreadPool(size_t threadPoolSize) {
     threadList_.reserve(threadPoolSize);
 }
@@ -26,3 +28,5 @@ void ThreadPool::threadFunc() {
         task();
     }
 }
+
+}  // namespace SpongeBob

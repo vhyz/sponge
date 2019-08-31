@@ -2,6 +2,7 @@
 #include <SpongeBob/TcpServer.h>
 #include <iostream>
 
+using namespace SpongeBob;
 
 int main() {
     setLogLevel(LOG_LEVEL_DEBUG);

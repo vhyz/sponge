@@ -5,6 +5,8 @@
 #include "CallBack.h"
 #include "TimeStamp.h"
 
+namespace SpongeBob {
+
 class Timer {
    public:
     Timer(TimeStamp expiration, CallBack cb, double interval)
@@ -34,5 +36,7 @@ class Timer {
 };
 
 using TimerId = std::weak_ptr<Timer>;
+
+}  // namespace SpongeBob
 
 #endif

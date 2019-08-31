@@ -4,6 +4,8 @@
 #include <netinet/in.h>
 #include <string>
 
+namespace SpongeBob {
+
 class InetAddress {
    public:
     InetAddress() = default;
@@ -24,4 +26,5 @@ class InetAddress {
     sockaddr_in addr_;
 };
 
+}  // namespace SpongeBob
 #endif

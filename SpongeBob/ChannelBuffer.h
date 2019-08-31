@@ -16,6 +16,8 @@
 
 */
 
+namespace SpongeBob {
+
 class ChannelBuffer {
    private:
     static const size_t kInitBufferSize = 1024;
@@ -192,4 +194,5 @@ class ChannelBuffer {
     size_t writeIndex_;
 };
 
+}  // namespace SpongeBob
 #endif

@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include "Logger.h"
 
+namespace SpongeBob {
+
 TcpServer::TcpServer(EventLoop* loop, int port, int threadNum)
     : serverFd_(-1),
       serverChannel(),
@@ -117,3 +119,5 @@ void TcpServer::removeConn(const spTcpConnection& spConn) {
     connMap_.erase(spConn->getFd());
     --connCount;
 }
+
+}  // namespace SpongeBob
