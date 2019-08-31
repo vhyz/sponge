@@ -29,6 +29,12 @@ EventLoop::EventLoop()
     addChannel(&wakeChannel_);
 }
 
+void EventLoop::quit() {
+    quit_ = true;
+    if(!isInLoopThread())
+        wakeUp();
+}
+ 
 void EventLoop::loop() {
     quit_ = false;
     while (!quit_) {

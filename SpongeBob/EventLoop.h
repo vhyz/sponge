@@ -19,7 +19,7 @@ class EventLoop {
 
     EventLoop();
 
-    void quit() { quit_ = true; }
+    void quit();
 
     void loop();
 
