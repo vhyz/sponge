@@ -59,7 +59,7 @@ class ChannelBuffer {
     int16_t peekInt16() const {
         int16_t n;
         memcpy(&n, readPtr(), sizeof(int16_t));
-        return n;
+        return be16toh(n);
     }
 
     int8_t peekInt8() const {
