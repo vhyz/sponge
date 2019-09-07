@@ -30,7 +30,7 @@ void TcpClient::newConnection(int fd) {
     spConn->setSendCallBack(writeCompleteCallBack_);
     spConn->setCloseCallBack(
         std::bind(&TcpClient::removeConnection, this, std::placeholders::_1));
-
+    
     {
         std::lock_guard<std::mutex> lock(mutex_);
         conn_ = std::move(spConn);

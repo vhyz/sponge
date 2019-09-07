@@ -14,7 +14,7 @@ add_library(
     TcpConnection.cpp
     TcpServer.cpp
     ThreadPool.cpp
-    TimerQueue.cpp
+    TimerManager.cpp
     TimeStamp.cpp
  )
 
