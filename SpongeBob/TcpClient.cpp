@@ -24,18 +24,27 @@ void TcpClient::newConnection(int fd) {
     }
     InetAddress local;
     local.setAddress(addr);
-    conn_ = std::make_shared<TcpConnection>(fd, loop_, local, peer_);
-    conn_->setMessageCallBack(messageCallBack_);
-    conn_->setConnCallBack(connectionCallBack_);
-    conn_->setSendCallBack(writeCompleteCallBack_);
-    conn_->setCloseCallBack(
+    auto spConn = std::make_shared<TcpConnection>(fd, loop_, local, peer_);
+    spConn->setMessageCallBack(messageCallBack_);
+    spConn->setConnCallBack(connectionCallBack_);
+    spConn->setSendCallBack(writeCompleteCallBack_);
+    spConn->setCloseCallBack(
         std::bind(&TcpClient::removeConnection, this, std::placeholders::_1));
+
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        conn_ = std::move(spConn);
+    }
 
     loop_->runInLoop(std::bind(&TcpConnection::connEstablished, conn_));
 }
 
 void TcpClient::removeConnection(const spTcpConnection& spConn) {
-    conn_.reset();
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        conn_.reset();
+    }
+
     if (reconnect_)
         connector_.start();
 }

@@ -1,5 +1,4 @@
-#ifndef SPONGEBOB_TIMERQUEUE_H
-#define SPONGEBOB_TIMERQUEUE_H
+#pragma once
 
 #include <memory>
 #include <set>
@@ -12,14 +11,14 @@ namespace SpongeBob {
 
 class EventLoop;
 
-class TimerQueue {
+class TimerManager {
    private:
     using Entry = std::pair<TimeStamp, std::shared_ptr<Timer>>;
 
    public:
-    TimerQueue(EventLoop* loop);
+    TimerManager(EventLoop* loop);
 
-    ~TimerQueue();
+    ~TimerManager();
 
     TimerId addTimer(TimeStamp timeStamp, CallBack cb, double interval);
 
@@ -56,5 +55,3 @@ class TimerQueue {
 };
 
 }  // namespace SpongeBob
-
-#endif

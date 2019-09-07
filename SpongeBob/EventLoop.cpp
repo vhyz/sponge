@@ -21,7 +21,7 @@ EventLoop::EventLoop()
       mutex_(),
       taskList_(),
       wakeUpFd_(-1),
-      timerQueue_(this) {
+      timerManager_(this) {
     wakeUpFd_ = createEventFd();
     wakeChannel_.setFd(wakeUpFd_);
     wakeChannel_.setEvents(EPOLLIN);
@@ -93,16 +93,16 @@ void EventLoop::runTasks() {
 
 TimerId EventLoop::runAfter(double delay, CallBack cb) {
     TimeStamp when = addTime(getNowTimeStamp(), delay);
-    return timerQueue_.addTimer(when, std::move(cb), 0.0);
+    return timerManager_.addTimer(when, std::move(cb), 0.0);
 }
 
 TimerId EventLoop::runEvery(double interval, CallBack cb) {
     TimeStamp when = addTime(getNowTimeStamp(), interval);
-    return timerQueue_.addTimer(when, std::move(cb), interval);
+    return timerManager_.addTimer(when, std::move(cb), interval);
 }
 
 void EventLoop::cancel(TimerId timerId) {
-    timerQueue_.cancel(std::move(timerId));
+    timerManager_.cancel(std::move(timerId));
 }
 
 }  // namespace SpongeBob

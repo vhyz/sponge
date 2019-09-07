@@ -1,6 +1,7 @@
 #ifndef SPONGEBOB_TCPCLIENT_H
 #define SPONGEBOB_TCPCLIENT_H
 
+#include <mutex>
 #include "CallBack.h"
 #include "Connector.h"
 #include "EventLoop.h"
@@ -47,6 +48,8 @@ class TcpClient {
     Connector connector_;
 
     bool reconnect_;
+
+    std::mutex mutex_;
 
     spTcpConnection conn_;
 

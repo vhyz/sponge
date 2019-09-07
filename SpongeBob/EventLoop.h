@@ -9,7 +9,7 @@
 #include "Channel.h"
 #include "Poller.h"
 #include "Timer.h"
-#include "TimerQueue.h"
+#include"TimerManager.h"
 
 namespace SpongeBob {
 
@@ -68,7 +68,7 @@ class EventLoop {
     // 监听唤醒读事件
     Channel wakeChannel_;
 
-    TimerQueue timerQueue_;
+    TimerManager timerManager_;
 };
 
 }  // namespace SpongeBob
