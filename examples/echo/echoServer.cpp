@@ -1,8 +1,8 @@
-#include <SpongeBob/Logger.h>
-#include <SpongeBob/TcpServer.h>
+#include <sponge/Logger.h>
+#include <sponge/TcpServer.h>
 #include <iostream>
 
-using namespace SpongeBob;
+using namespace sponge;
 
 int main() {
     setLogLevel(LOG_LEVEL_DEBUG);

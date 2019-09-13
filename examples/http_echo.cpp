@@ -1,7 +1,7 @@
+#include <sponge/TcpServer.h>
 #include <iostream>
-#include "../SpongeBob/TcpServer.h"
 
-using namespace SpongeBob;
+using namespace sponge;
 
 int main() {
     std::string msg =
@@ -14,7 +14,7 @@ int main() {
         "<!DOCTYPE html>"
         "<html>"
         "<head>"
-        "<title>SpongeBob</title>"
+        "<title>sponge</title>"
         "</head>"
         "<body>"
         "<h1>HttpTestServer</h1>"

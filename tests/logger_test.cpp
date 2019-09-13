@@ -1,6 +1,6 @@
-#include <SpongeBob/Logger.h>
+#include <sponge/Logger.h>
 
-using namespace SpongeBob;
+using namespace sponge;
 
 int main() {
     setLogLevel(LOG_LEVEL_ERROR);

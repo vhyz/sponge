@@ -1,8 +1,8 @@
-#include <SpongeBob/ChannelBuffer.h>
+#include <sponge/ChannelBuffer.h>
 #include <stdio.h>
 #include <iostream>
 
-using namespace SpongeBob;
+using namespace sponge;
 
 void printBufferInfo(ChannelBuffer& buffer) {
     std::cout << "capacity(): " << buffer.capacity() << std::endl;

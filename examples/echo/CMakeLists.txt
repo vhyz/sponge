@@ -8,5 +8,5 @@ add_executable(
     echoClient.cpp
 )
 
-target_link_libraries(echoServer SpongeBob)
-target_link_libraries(echoClient SpongeBob)
+target_link_libraries(echoServer sponge)
+target_link_libraries(echoClient sponge)

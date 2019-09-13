@@ -1,8 +1,8 @@
-#include <SpongeBob/EventLoop.h>
-#include <SpongeBob/Logger.h>
-#include <SpongeBob/ThreadPool.h>
+#include <sponge/EventLoop.h>
+#include <sponge/Logger.h>
+#include <sponge/ThreadPool.h>
 
-using namespace SpongeBob;
+using namespace sponge;
 
 int main() {
     ThreadPool pool(5);

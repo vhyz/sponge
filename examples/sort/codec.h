@@ -1,12 +1,11 @@
-#ifndef SPONGEBOB_EXAMPLES_SORT_CODEC_H
-#define SPONGEBOB_EXAMPLES_SORT_CODEC_H
+#pragma once
 
-#include <SpongeBob/CallBack.h>
-#include <SpongeBob/TcpConnection.h>
+#include <sponge/CallBack.h>
+#include <sponge/TcpConnection.h>
 #include <arpa/inet.h>
 #include <vector>
 
-using namespace SpongeBob;
+using namespace sponge;
 
 class LengthHeaderCodec {
    public:

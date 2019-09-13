@@ -1,10 +1,11 @@
-#include "../SpongeBob/BlockQueue.h"
+#include <sponge/BlockQueue.h>
+#include <sponge/EventLoop.h>
+#include <sponge/ThreadPool.h>
 #include <iostream>
-#include "../SpongeBob/EventLoop.h"
-#include "../SpongeBob/ThreadPool.h"
 
 using namespace std;
-using namespace SpongeBob;
+using namespace sponge;
+
 int main() {
     EventLoop loop;
     ThreadPool pool(10);

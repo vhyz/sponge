@@ -1,11 +1,11 @@
-#include <SpongeBob/EventLoopThread.h>
-#include <SpongeBob/Logger.h>
-#include <SpongeBob/TcpClient.h>
+#include <sponge/EventLoopThread.h>
+#include <sponge/Logger.h>
+#include <sponge/TcpClient.h>
 #include <iostream>
 #include <string>
 
 using namespace std::placeholders;
-using namespace SpongeBob;
+using namespace sponge;
 
 class EchoClient {
    public:

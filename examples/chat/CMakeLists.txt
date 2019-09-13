@@ -8,5 +8,5 @@ add_executable(
     chatClient.cpp
 )
 
-target_link_libraries(chatServer SpongeBob)
-target_link_libraries(chatClient SpongeBob)
+target_link_libraries(chatServer sponge)
+target_link_libraries(chatClient sponge)

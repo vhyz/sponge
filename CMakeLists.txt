@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(SpongeBob)
+project(sponge)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CXX_FLAGS -g)
@@ -11,6 +11,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-add_subdirectory(SpongeBob)
+add_subdirectory(sponge)
 add_subdirectory(tests)
 add_subdirectory(examples)

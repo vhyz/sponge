@@ -1,12 +1,12 @@
-#include <SpongeBob/Logger.h>
-#include <SpongeBob/TcpServer.h>
-#include <SpongeBob/ThreadPool.h>
+#include <sponge/Logger.h>
+#include <sponge/TcpServer.h>
+#include <sponge/ThreadPool.h>
 #include "codec.h"
 
 #include <algorithm>
 
 using namespace std::placeholders;
-using namespace SpongeBob;
+using namespace sponge;
 
 class SortServer {
    public:

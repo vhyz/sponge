@@ -1,8 +1,8 @@
-#include"../SpongeBob/CircularBuffer.h"
+#include <sponge/CircularBuffer.h>
 #include <iostream>
 
 using namespace std;
-using namespace SpongeBob;
+using namespace sponge;
 
 class test {
    public:

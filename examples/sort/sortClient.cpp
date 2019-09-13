@@ -1,11 +1,11 @@
-#include <SpongeBob/Logger.h>
-#include <SpongeBob/TcpClient.h>
+#include <sponge/Logger.h>
+#include <sponge/TcpClient.h>
 #include <stdlib.h>
 #include <iostream>
 #include "codec.h"
 
 using namespace std::placeholders;
-using namespace SpongeBob;
+using namespace sponge;
 
 class SortClient {
    public:

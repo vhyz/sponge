@@ -1,12 +1,12 @@
-#include <SpongeBob/Logger.h>
-#include <SpongeBob/TcpServer.h>
+#include <sponge/Logger.h>
+#include <sponge/TcpServer.h>
 #include <stdio.h>
 #include <mutex>
 #include <set>
 #include "codec.h"
 
 using namespace std::placeholders;
-using namespace SpongeBob;
+using namespace sponge;
 
 class ChatServer {
    public:

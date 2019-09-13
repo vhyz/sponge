@@ -1,11 +1,10 @@
-#ifndef SPONGEBOB_EXAMPLES_CHAT_CODEC
-#define SPONGEBOB_EXAMPLES_CHAT_CODEC
+#pragma once
 
-#include <SpongeBob/TcpConnection.h>
+#include <sponge/TcpConnection.h>
 #include <functional>
 #include <string>
 
-using namespace SpongeBob;
+using namespace sponge;
 
 class LengthHeaderCodec {
    public:
@@ -39,5 +38,3 @@ class LengthHeaderCodec {
 
     StringMessageCallBack messageCallBack_;
 };
-
-#endif

@@ -1,10 +1,10 @@
-# SpongeBob: A C++ Multithread Network Library
+# sponge: A C++ Multithread Network Library
 
-[![Build Status](https://travis-ci.org/vhyz/SpongeBob.svg?branch=master)](https://travis-ci.org/vhyz/SpongeBob)
+[![Build Status](https://travis-ci.org/vhyz/SpongeBob.svg?branch=master)](https://travis-ci.org/vhyz/sponge)
 
 ## Introduction
 
-SpongeBob是一个基于Reactor模式的多线程非阻塞网络库，是我在阅读陈硕老师的《Linux多线程服务端编程》后的一个练手项目。
+sponge是一个基于Reactor模式的多线程非阻塞网络库，是我在阅读陈硕老师的《Linux多线程服务端编程》后的一个练手项目。
 
 ## Envoirment
 
@@ -14,7 +14,7 @@ SpongeBob是一个基于Reactor模式的多线程非阻塞网络库，是我在�
 
 ## Feature
 
-* Poller使用Epoll实现IO复用和非阻塞IO
+* Poller使用epoll LT实现IO复用和非阻塞IO
 * 单进程多线程，其中多线程使用到了C++11的std::thread库
 * Reactor模式，线程分为主线程与IO线程，主线程仅监听一个新连接(accept)的事件，并按照Round Robin策略分发给其他IO线程，IO线程负责对主线程分发的连接的读写
 * 由于TCP连接常在回调函数中使用，其生命周期模糊，使用std::shared_ptr管理TCP连接，保证了TCP连接生命周期不会过早结束
@@ -41,11 +41,11 @@ SpongeBob是一个基于Reactor模式的多线程非阻塞网络库，是我在�
 比如写一个Echo服务器，我们需要设置收到消息时的回调函数
 
 ```C++
-#include <SpongeBob/Logger.h>
-#include <SpongeBob/TcpServer.h>
+#include <sponge/Logger.h>
+#include <sponge/TcpServer.h>
 
 int main() {
-    using namespace SpongeBob;
+    using namespace sponge;
     // 设置LOGGER日志等级
     setLogLevel(LOG_LEVEL_DEBUG);
     // 创建一个EventLoop
@@ -76,19 +76,19 @@ int main() {
 
 * 主线程+7个IO线程 并发1K个长连接
 
-![](https://github.com/vhyz/SpongeBob/blob/master/img/1.png)
+![](https://github.com/vhyz/sponge/blob/master/img/1.png)
 
 * 主线程+7个IO线程 并发10K个长连接
 
-![](https://github.com/vhyz/SpongeBob/blob/master/img/2.png)
+![](https://github.com/vhyz/sponge/blob/master/img/2.png)
 
 * 主线程+15个IO线程 并发1K个连接
 
-![](https://github.com/vhyz/SpongeBob/blob/master/img/3.png)
+![](https://github.com/vhyz/sponge/blob/master/img/3.png)
 
 * 主线程+15个IO线程 并发10K个连接
 
-![](https://github.com/vhyz/SpongeBob/blob/master/img/4.png)
+![](https://github.com/vhyz/sponge/blob/master/img/4.png)
 
 ## ToDoList
 

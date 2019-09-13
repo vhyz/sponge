@@ -1,8 +1,8 @@
+#include <sponge/EventLoop.h>
 #include <iomanip>
 #include <iostream>
-#include "../SpongeBob/EventLoop.h"
 
-using namespace SpongeBob;
+using namespace sponge;
 
 void print(const char* msg) {
     std::cout << std::fixed << std::setprecision(6);
