@@ -109,8 +109,6 @@ void TcpConnection::shutdownInLoop() {
 
 void TcpConnection::handleRead() {
     int res = readMsg();
-    // std::cout << "TcpConnection::handleRead  " << res << "  bytes"
-    //          << " " << std::this_thread::get_id() << std::endl;
     if (res > 0) {
         if (messageCallBack_)
             messageCallBack_(shared_from_this(), inputBuffer_);
@@ -157,6 +155,7 @@ void TcpConnection::handleClose() {
     connected = false;
 
     loop_->deleteChannle(&channel_);
+    channel_.disableAll();
     auto guardThis = shared_from_this();
     if (connCallBack_)
         connCallBack_(guardThis);

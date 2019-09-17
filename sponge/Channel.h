@@ -32,6 +32,11 @@ class Channel {
 
     void disableWrite() { events_ &= ~EPOLLOUT; }
 
+    void disableAll() {
+        events_ = 0;
+        revents_ = 0;
+    }
+
     void setReadCallBack(EventCallBack cb) { readCallBack_ = std::move(cb); }
 
     void setWriteCallBack(EventCallBack cb) { writeCallBack_ = std::move(cb); }
@@ -54,4 +59,3 @@ class Channel {
 };
 
 }  // namespace sponge
-

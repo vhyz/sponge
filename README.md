@@ -1,6 +1,6 @@
 # sponge: A C++ Multithread Network Library
 
-[![Build Status](https://travis-ci.org/vhyz/SpongeBob.svg?branch=master)](https://travis-ci.org/vhyz/sponge)
+[![Build Status](https://travis-ci.org/vhyz/sponge.svg?branch=master)](https://travis-ci.org/vhyz/sponge)
 
 ## Introduction
 
@@ -18,13 +18,13 @@ sponge是一个基于Reactor模式的多线程非阻塞网络库，是我在阅�
 * 单进程多线程，其中多线程使用到了C++11的std::thread库
 * Reactor模式，线程分为主线程与IO线程，主线程仅监听一个新连接(accept)的事件，并按照Round Robin策略分发给其他IO线程，IO线程负责对主线程分发的连接的读写
 * 由于TCP连接常在回调函数中使用，其生命周期模糊，使用std::shared_ptr管理TCP连接，保证了TCP连接生命周期不会过早结束
-* 用Linux提供的timerfd实现定时器功能，每个EventLoop都有一个TimerQueue，底层数据结构采用std::set，添加与删除的复杂度均为O(logn)
+* 用Linux提供的timerfd实现定时器功能，每个EventLoop都有一个TimerManager，底层数据结构采用std::set，添加与删除的复杂度均为O(logn)
 * TcpClient支持自动重连服务器
 * 内置简单的线程池，可将复杂的业务逻辑交给线程池异步处理
 
 ## Usage
 
-写一个服务器，需要include"TcpServer.h"
+写一个服务器，需要include <sponge/TcpServer.h>
 
 一共有三个回调函数可以设置
 
