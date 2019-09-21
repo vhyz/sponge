@@ -2,8 +2,11 @@
 #include <assert.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/epoll.h>
 #include <unistd.h>
 #include <iostream>
+#include "Event.h"
+#include "Logger.h"
 
 namespace sponge {
 
@@ -11,39 +14,30 @@ const int InitEventListSize = 16;
 const int TimeOut = 1000;
 
 Poller::Poller()
-    : epollfd_(epoll_create1(EPOLL_CLOEXEC)),
-      eventList_(InitEventListSize),
-      channelMap_() {
+    : epollfd_(epoll_create1(EPOLL_CLOEXEC)), eventList_(InitEventListSize) {
     if (epollfd_ < 0) {
-        std::cout << "epoll_create1 error" << std::endl;
-        exit(1);
+        FATAL("epoll_create1 error");
     }
 }
 
 Poller::~Poller() { close(epollfd_); }
 
-void Poller::poll(std::vector<Channel*>& activeChannelList) {
-    int timeout = TimeOut;
-
+void Poller::poll(int timeout) {
     int numEvents =
         epoll_wait(epollfd_, eventList_.data(), eventList_.size(), timeout);
 
     if (numEvents < 0) {
-        std::cout << "epoll_wait error" << std::endl;
+        ERROR("epoll_wait error, errno value: %d, errno string: %s", errno,
+              strerror(errno));
         return;
     }
 
     for (int i = 0; i < numEvents; ++i) {
-        int events = eventList_[i].events;
+        uint32_t events = eventList_[i].events;
 
-        Channel* channel = static_cast<Channel*>(eventList_[i].data.ptr);
+        Event* event = static_cast<Event*>(eventList_[i].data.ptr);
 
-        auto it = channelMap_.find(channel->getFd());
-
-        if (it != channelMap_.end() && it->second == channel) {
-            channel->setRevents(events);
-            activeChannelList.push_back(channel);
-        }
+        event->handleEvent(events);
     }
 
     if (static_cast<size_t>(numEvents) == eventList_.size()) {
@@ -51,48 +45,42 @@ void Poller::poll(std::vector<Channel*>& activeChannelList) {
     }
 }
 
-void Poller::addChannel(Channel* channel) {
-    int fd = channel->getFd();
+void Poller::addEvent(Event* event) {
+    int fd = event->getFd();
 
-    epoll_event event;
+    epoll_event ev;
+    ev.data.ptr = event;
+    ev.events = event->getEvents();
 
-    event.data.ptr = channel;
-    event.events = channel->getEvents();
+    INFO("%d", fd);
+    INFO("%d", event->getEvents());
 
-    channelMap_[fd] = channel;
-
-    if (epoll_ctl(epollfd_, EPOLL_CTL_ADD, fd, &event) < 0) {
-        std::cout << "epoll_ctl error" << std::endl;
-        exit(1);
+    if (epoll_ctl(epollfd_, EPOLL_CTL_ADD, fd, &ev) < 0) {
+        ERROR("epoll_ctl error");
     }
 }
 
-void Poller::updateChannel(Channel* channel) {
-    int fd = channel->getFd();
+void Poller::updateEvent(Event* event) {
+    int fd = event->getFd();
 
-    epoll_event event;
-    event.data.ptr = channel;
-    event.events = channel->getEvents();
+    epoll_event ev;
+    ev.data.ptr = event;
+    ev.events = event->getEvents();
 
-    if (epoll_ctl(epollfd_, EPOLL_CTL_MOD, fd, &event) < 0) {
-        std::cout << "epoll_ctl error" << std::endl;
-        exit(1);
+    if (epoll_ctl(epollfd_, EPOLL_CTL_MOD, fd, &ev) < 0) {
+        ERROR("epoll_ctl error");
     }
 }
 
-void Poller::deleteChannel(Channel* channel) {
-    int fd = channel->getFd();
+void Poller::removeEvent(Event* event) {
+    int fd = event->getFd();
 
-    epoll_event event;
-    event.data.ptr = channel;
-    event.events = channel->getEvents();
+    epoll_event ev;
+    ev.data.ptr = event;
+    ev.events = event->getEvents();
 
-    channelMap_.erase(fd);
-
-    if (epoll_ctl(epollfd_, EPOLL_CTL_DEL, fd, &event) < 0) {
-        std::cout << "epoll_ctl error" << std::endl;
-        std::cout << strerror(errno) << std::endl;
-        exit(1);
+    if (epoll_ctl(epollfd_, EPOLL_CTL_DEL, fd, &ev) < 0) {
+        ERROR("epoll_ctl error");
     }
 }
 

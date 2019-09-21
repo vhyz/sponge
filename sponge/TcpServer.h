@@ -1,7 +1,8 @@
 #pragma once
 
+#include <map>
 #include "CallBack.h"
-#include "Channel.h"
+#include "Event.h"
 #include "EventLoop.h"
 #include "EventLoopThreadPool.h"
 #include "TcpConnection.h"
@@ -34,7 +35,7 @@ class TcpServer {
     int serverFd_;
 
     // 服务器事件
-    Channel serverChannel;
+    Event serverEvent_;
 
     // 服务器fd所属的loop
     EventLoop* loop_;

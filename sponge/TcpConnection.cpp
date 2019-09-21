@@ -15,7 +15,7 @@ TcpConnection::TcpConnection(int fd, EventLoop* loop,
                              size_t readHighWaterMark)
     : fd_(fd),
       loop_(loop),
-      channel_(),
+      event_(),
       localAddr_(localAddr),
       peerAddr_(peerAddr),
       inputBuffer_(),
@@ -23,16 +23,22 @@ TcpConnection::TcpConnection(int fd, EventLoop* loop,
       connected(true),
       half_close_(false),
       readHighWaterMark_(readHighWaterMark) {
-    channel_.setFd(fd_);
-    channel_.setEvents(EPOLLIN);
-    channel_.setCloseCallBack(std::bind(&TcpConnection::handleClose, this));
-    channel_.setErrorCallBack(std::bind(&TcpConnection::handleError, this));
-    channel_.setReadCallBack(std::bind(&TcpConnection::handleRead, this));
-    channel_.setWriteCallBack(std::bind(&TcpConnection::handleWrite, this));
+
+    event_.setFd(fd_);
+    event_.enableRead();
+    event_.setEventCallBack([this](uint32_t events){
+        auto guard = shared_from_this();
+        if(events & Event::SPEV_READ) {
+            handleRead();
+        }
+        if(events & Event::SPEV_WRITE) {
+            handleWrite();
+        }
+    });
 }
 
 // 析构函数，不可能由主线程运行，因为主线程已经cleanup
-TcpConnection::~TcpConnection() { close(fd_); }
+TcpConnection::~TcpConnection() { ::close(fd_); }
 
 void TcpConnection::send(std::string_view msg) {
     if (loop_->isInLoopThread()) {
@@ -84,9 +90,8 @@ void TcpConnection::sendInLoop(const void* buf, size_t len) {
     if (!faultError && remaining > 0) {
         outputBuffer_.append(static_cast<const char*>(buf) + nwrite, remaining);
 
-        uint32_t events = channel_.getEvents();
-        channel_.setEvents(events | EPOLLOUT);
-        loop_->updateChannel(&channel_);
+        event_.enableWrite();
+        loop_->updateEvent(&event_);
     }
 }
 
@@ -114,8 +119,6 @@ void TcpConnection::handleRead() {
             messageCallBack_(shared_from_this(), inputBuffer_);
     } else if (res == 0) {
         handleClose();
-    } else {
-        handleError();
     }
 }
 
@@ -130,10 +133,8 @@ void TcpConnection::handleWrite() {
                     std::bind(sendCallBack_, shared_from_this()));
             }
 
-            uint32_t events = channel_.getEvents();
-            channel_.setEvents(events & ~EPOLLOUT);
-            loop_->updateChannel(&channel_);
-
+            event_.disableWrite();
+            loop_->updateEvent(&event_);
             if (half_close_) {
                 shutdownInLoop();
             }
@@ -143,19 +144,14 @@ void TcpConnection::handleWrite() {
     }
 }
 
-void TcpConnection::handleError() {
-    // FIXME 日志记录错误
-    // 一般不会调用这个函数
-}
-
 void TcpConnection::handleClose() {
     if (!connected) {
         return;
     }
     connected = false;
 
-    loop_->deleteChannle(&channel_);
-    channel_.disableAll();
+    loop_->removeEvent(&event_);
+
     auto guardThis = shared_from_this();
     if (connCallBack_)
         connCallBack_(guardThis);
@@ -169,7 +165,7 @@ void TcpConnection::forceClose() {
 }
 
 void TcpConnection::connEstablished() {
-    loop_->addChannel(&channel_);
+    loop_->addEvent(&event_);
     if (connCallBack_)
         connCallBack_(shared_from_this());
 }

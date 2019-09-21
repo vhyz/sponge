@@ -3,13 +3,14 @@
 #include <strings.h>
 #include <sys/fcntl.h>
 #include <unistd.h>
+#include <iostream>
 #include "Logger.h"
 
 namespace sponge {
 
 TcpServer::TcpServer(EventLoop* loop, int port, int threadNum)
     : serverFd_(-1),
-      serverChannel(),
+      serverEvent_(),
       loop_(loop),
       connCount(0),
       connMap_(),
@@ -27,23 +28,26 @@ TcpServer::TcpServer(EventLoop* loop, int port, int threadNum)
     // 监听端口
     listenPort(port);
 
-    serverChannel.setFd(serverFd_);
-    serverChannel.enableRead();
-    serverChannel.setReadCallBack(std::bind(&TcpServer::onNewConn, this));
+    serverEvent_.setFd(serverFd_);
+    serverEvent_.enableRead();
+    serverEvent_.setEventCallBack([this](uint32_t events) {
+        if (events & Event::SPEV_READ) {
+            onNewConn();
+        }
+    });
 }
 
 TcpServer::~TcpServer() {
-    loop_->deleteChannle(&serverChannel);
+    loop_->removeEvent(&serverEvent_);
     close(serverFd_);
 }
 
 void TcpServer::start() {
     INFO("TcpServer port:%d, with %d IO threads start", localAddr_.getPort(),
          threadPool_.getNumThread());
-
     threadPool_.start();
 
-    loop_->addChannel(&serverChannel);
+    loop_->addEvent(&serverEvent_);
 }
 
 void TcpServer::setNonblock(int fd) {

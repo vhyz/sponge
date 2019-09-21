@@ -13,38 +13,71 @@ int createEventFd() {
     return fd;
 }
 
+class EventLoop::WakeUpEvent {
+   public:
+    WakeUpEvent() : fd_(createEventFd()), event_(fd_) {
+        event_.enableRead();
+        event_.setEventCallBack(
+            std::bind(&WakeUpEvent::handleEvent, this, std::placeholders::_1));
+    }
+
+    ~WakeUpEvent() { ::close(fd_); }
+
+    void handleEvent(uint32_t events) {
+        if (events & Event::SPEV_READ) {
+            handleRead();
+        }
+    }
+
+    void wakeUp() {
+        uint64_t one = 1;
+        write(fd_, &one, sizeof(one));
+    }
+
+    Event* getEvent() { return &event_; }
+
+   private:
+    void handleRead() {
+        char buf[sizeof(uint64_t) * 1024];
+        while (true) {
+            int cnt = read(fd_, buf, sizeof(buf));
+
+            if (cnt == -1 || static_cast<size_t>(cnt) < sizeof(buf)) {
+                break;
+            }
+        }
+    }
+
+   private:
+    int fd_;
+
+    Event event_;
+};
+
 EventLoop::EventLoop()
     : poller_(),
-      avtiveChannelList_(),
       quit_(false),
       threadId_(std::this_thread::get_id()),
       mutex_(),
       taskList_(),
-      wakeUpFd_(-1),
+      wakeUpEvent_(std::make_unique<WakeUpEvent>()),
       timerManager_(this) {
-    wakeUpFd_ = createEventFd();
-    wakeChannel_.setFd(wakeUpFd_);
-    wakeChannel_.setEvents(EPOLLIN);
-    wakeChannel_.setReadCallBack(std::bind(&EventLoop::readWakeUpHandle, this));
-    addChannel(&wakeChannel_);
+    this->addEvent(wakeUpEvent_->getEvent());
 }
+
+EventLoop::~EventLoop() { this->removeEvent(wakeUpEvent_->getEvent()); }
 
 void EventLoop::quit() {
     quit_ = true;
-    if(!isInLoopThread())
-        wakeUp();
+    if (!isInLoopThread()) {
+        wakeUpEvent_->wakeUp();
+    }
 }
- 
+
 void EventLoop::loop() {
     quit_ = false;
     while (!quit_) {
-        poller_.poll(avtiveChannelList_);
-
-        for (Channel* channel : avtiveChannelList_) {
-            channel->handleEvent();
-        }
-
-        avtiveChannelList_.clear();
+        poller_.poll(1000);
 
         // 每一次唤醒都要执行一下任务
         // 确保事件的变化
@@ -52,18 +85,7 @@ void EventLoop::loop() {
     }
 }
 
-void EventLoop::readWakeUpHandle() {
-    // std::cout << "wakeUpRead" << std::endl;
-    uint64_t one = 1;
-    read(wakeUpFd_, &one, sizeof(one));
-}
-
-void EventLoop::wakeUp() {
-    uint64_t one = 1;
-    write(wakeUpFd_, (char*)&one, sizeof(one));
-}
-
-void EventLoop::runInLoop(Functor functor) {
+void EventLoop::runInLoop(Functor&& functor) {
     if (isInLoopThread()) {
         functor();
     } else {
@@ -71,13 +93,30 @@ void EventLoop::runInLoop(Functor functor) {
     }
 }
 
-void EventLoop::queueInLoop(Functor functor) {
+void EventLoop::runInLoop(const Functor& functor) {
+    if (isInLoopThread()) {
+        functor();
+    } else {
+        queueInLoop(functor);
+    }
+}
+
+void EventLoop::queueInLoop(Functor&& functor) {
     {
         std::lock_guard<std::mutex> lock(mutex_);
         taskList_.push_back(std::move(functor));
     }
 
-    wakeUp();
+    wakeUpEvent_->wakeUp();
+}
+
+void EventLoop::queueInLoop(const Functor& functor) {
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        taskList_.push_back(functor);
+    }
+
+    wakeUpEvent_->wakeUp();
 }
 
 void EventLoop::runTasks() {
@@ -86,8 +125,8 @@ void EventLoop::runTasks() {
         std::lock_guard<std::mutex> guard(mutex_);
         taskList.swap(taskList_);
     }
-    for (size_t i = 0; i < taskList.size(); ++i) {
-        taskList[i]();
+    for (auto& task : taskList) {
+        task();
     }
 }
 

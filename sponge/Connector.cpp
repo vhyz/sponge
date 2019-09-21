@@ -1,6 +1,6 @@
 #include "Connector.h"
-#include <sponge/Logger.h>
 #include <errno.h>
+#include <sponge/Logger.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -17,7 +17,12 @@ double Connector::retryInterval = 3;
 
 Connector::Connector(EventLoop* loop, const InetAddress& peer)
     : loop_(loop), peer_(peer) {
-    channel_.setWriteCallBack(std::bind(&Connector::handleWrite, this));
+    event_.setEventCallBack([this](uint32_t events) {
+        INFO("handleWrite");
+        if (events & Event::SPEV_WRITE) {
+            handleWrite();
+        }
+    });
 }
 
 Connector::~Connector() { loop_->cancel(retryTimer_); }
@@ -35,17 +40,17 @@ void Connector::startInLoop() {
 
     int err = connect(fd_, (sockaddr*)&peer_.getSockaddr(), sizeof(peer_));
     if (err) {
-        channel_.setFd(fd_);
-        channel_.setEvents(EPOLLOUT);
+        event_.setFd(fd_);
+        event_.enableWrite();
 
-        loop_->addChannel(&channel_);
+        loop_->addEvent(&event_);
     } else {
         newConnectionCallBack_(fd_);
     }
 }
 
 void Connector::handleWrite() {
-    loop_->deleteChannle(&channel_);
+    loop_->removeEvent(&event_);
     int err;
     socklen_t len = sizeof(err);
     int ret = getsockopt(fd_, SOL_SOCKET, SO_ERROR, &err, &len);

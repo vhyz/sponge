@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iostream>
 #include "EventLoop.h"
+#include "Logger.h"
 
 namespace sponge {
 
@@ -15,26 +16,29 @@ int create_timerfd() {
     int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
 
     if (fd < 0) {
-        std::cout << "create_timerfd error" << std::endl;
-        exit(1);
+        FATAL("create_timerfd error");
     }
 
     return fd;
 }
 
 TimerManager::TimerManager(EventLoop* loop)
-    : loop_(loop), timerFd_(-1), channel_(), nextExpiration_(-1) {
+    : loop_(loop), timerFd_(-1), nextExpiration_(-1) {
     timerFd_ = create_timerfd();
 
-    channel_.setFd(timerFd_);
-    channel_.setEvents(EPOLLIN);
-    channel_.setReadCallBack(std::bind(&TimerManager::handleRead, this));
+    event_.setFd(timerFd_);
+    event_.enableRead();
+    event_.setEventCallBack([this](uint32_t events) {
+        if (events & Event::SPEV_READ) {
+            handleRead();
+        }
+    });
 
-    loop_->addChannel(&channel_);
+    loop_->addEvent(&event_);
 }
 
 TimerManager::~TimerManager() {
-    loop_->deleteChannle(&channel_);
+    loop_->removeEvent(&event_);
     close(timerFd_);
 }
 
@@ -104,9 +108,7 @@ void TimerManager::resetTimerFd() {
         int ret = timerfd_settime(timerFd_, 0, &newValue, nullptr);
 
         if (ret) {
-            std::cout << strerror(errno) << std::endl;
-
-            std::cout << "timerfd_settime error" << std::endl;
+            ERROR("timerfd_settime error");
         }
     }
 }

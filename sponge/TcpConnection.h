@@ -8,8 +8,8 @@
 #include <string>
 #include <thread>
 #include "CallBack.h"
-#include "Channel.h"
 #include "ChannelBuffer.h"
+#include "Event.h"
 #include "EventLoop.h"
 #include "InetAddress.h"
 
@@ -38,8 +38,6 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     void handleWrite();
 
     void handleClose();
-
-    void handleError();
 
     // 强制关闭
     void forceClose();
@@ -110,7 +108,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
     EventLoop* loop_;
 
     // 当前连接的事件
-    Channel channel_;
+    Event event_;
 
     // 本地与服务器的addr
     InetAddress localAddr_;

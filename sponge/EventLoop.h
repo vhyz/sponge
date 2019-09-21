@@ -5,10 +5,10 @@
 #include <thread>
 #include <vector>
 #include "CallBack.h"
-#include "Channel.h"
+#include "Event.h"
 #include "Poller.h"
 #include "Timer.h"
-#include"TimerManager.h"
+#include "TimerManager.h"
 
 namespace sponge {
 
@@ -18,25 +18,25 @@ class EventLoop {
 
     EventLoop();
 
+    ~EventLoop();
+
     void quit();
 
     void loop();
 
-    void updateChannel(Channel* channle) { poller_.updateChannel(channle); }
+    void updateEvent(Event* event) { poller_.updateEvent(event); }
 
-    void addChannel(Channel* channel) { poller_.addChannel(channel); }
+    void addEvent(Event* event) { poller_.addEvent(event); }
 
-    void deleteChannle(Channel* channle) { poller_.deleteChannel(channle); }
-
-    void wakeUp();
-
-    void readWakeUpHandle();
+    void removeEvent(Event* event) { poller_.removeEvent(event); }
 
     void runTasks();
 
-    void runInLoop(Functor functor);
+    void runInLoop(const Functor& functor);
+    void runInLoop(Functor&& functor);
 
-    void queueInLoop(Functor functor);
+    void queueInLoop(const Functor& functor);
+    void queueInLoop(Functor&& functor);
 
     TimerId runAfter(double delay, CallBack cb);
 
@@ -51,8 +51,6 @@ class EventLoop {
    private:
     Poller poller_;
 
-    std::vector<Channel*> avtiveChannelList_;
-
     bool quit_;
 
     std::thread::id threadId_;
@@ -61,11 +59,10 @@ class EventLoop {
 
     std::vector<Functor> taskList_;
 
-    // 用于唤醒线程的eventfd
-    int wakeUpFd_;
+    class WakeUpEvent;
 
     // 监听唤醒读事件
-    Channel wakeChannel_;
+    std::unique_ptr<WakeUpEvent> wakeUpEvent_;
 
     TimerManager timerManager_;
 };

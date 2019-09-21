@@ -2,8 +2,8 @@
 add_library(
     sponge
     BlockQueue.cpp
-    Channel.cpp
     Connector.cpp
+    Event.cpp
     EventLoop.cpp
     EventLoopThread.cpp
     EventLoopThreadPool.cpp

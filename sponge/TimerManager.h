@@ -4,7 +4,7 @@
 #include <set>
 #include <utility>
 #include <vector>
-#include "Channel.h"
+#include "Event.h"
 #include "Timer.h"
 
 namespace sponge {
@@ -48,7 +48,7 @@ class TimerManager {
 
     int timerFd_;
 
-    Channel channel_;
+    Event event_;
 
     // 定时器最近任务发生的时间
     TimeStamp nextExpiration_;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Channel.h"
+#include "Event.h"
 #include "EventLoop.h"
 #include "TcpConnection.h"
 #include "Timer.h"
@@ -32,7 +32,7 @@ class Connector {
 
     EventLoop* loop_;
 
-    Channel channel_;
+    Event event_;
 
     int fd_;
 
