@@ -71,7 +71,6 @@ void TcpConnection::sendInLoop(const void* buf, size_t len) {
         nwrite = ::write(fd_, buf, len);
 
         if (nwrite >= 0) {
-            INFO("sendInLoop %d bytes", len);
             remaining = len - nwrite;
             if (remaining == 0 && sendCallBack_) {
                 loop_->queueInLoop(

@@ -11,7 +11,6 @@
 namespace sponge {
 
 const int InitEventListSize = 16;
-const int TimeOut = 1000;
 
 Poller::Poller()
     : epollfd_(epoll_create1(EPOLL_CLOEXEC)), eventList_(InitEventListSize) {
@@ -51,9 +50,6 @@ void Poller::addEvent(Event* event) {
     epoll_event ev;
     ev.data.ptr = event;
     ev.events = event->getEvents();
-
-    INFO("%d", fd);
-    INFO("%d", event->getEvents());
 
     if (epoll_ctl(epollfd_, EPOLL_CTL_ADD, fd, &ev) < 0) {
         ERROR("epoll_ctl error");

@@ -9,7 +9,7 @@ int main() {
         "Server: HttpTestServer/0.1\r\n"
         "Content-Type: text/html\r\n"
         "Connection: Keep-Alive\r\n"
-        "Content-Length: 100101\r\n"
+        "Content-Length: 98\r\n"
         "\r\n"
         "<!DOCTYPE html>"
         "<html>"
@@ -20,7 +20,6 @@ int main() {
         "<h1>HttpTestServer</h1>"
         "</body>"
         "</html>";
-    msg += std::string(100000, 'a');
 
     EventLoop loop;
     TcpServer tcpServer(&loop, 5000, 7);
