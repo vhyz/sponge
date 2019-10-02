@@ -4,7 +4,6 @@
 #include <string.h>
 #include <sys/epoll.h>
 #include <unistd.h>
-#include <iostream>
 #include "Event.h"
 #include "Logger.h"
 

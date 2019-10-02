@@ -20,10 +20,10 @@ class ChatServer {
     }
 
     void onConnection(const spTcpConnection& spConn) {
-        INFO("connection %s -> %s %s",
+        INFO("connection %s -> %s %s , fd: %d",
              spConn->getPeerAddr().getIpAndPort().c_str(),
              spConn->getLocalAddr().getIpAndPort().c_str(),
-             spConn->isConnected() ? "up" : "down");
+             spConn->isConnected() ? "up" : "down", spConn->getFd());
 
         std::lock_guard<std::mutex> lock(mutex_);
 

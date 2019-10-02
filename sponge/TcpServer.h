@@ -59,6 +59,8 @@ class TcpServer {
 
     InetAddress localAddr_;
 
+    static const size_t MAXCONN = 30000;
+
     void setNonblock(int fd);
 
     void setReuse(int fd);
@@ -68,8 +70,6 @@ class TcpServer {
     void onNewConn();
 
     void removeConn(const spTcpConnection& spConn);
-
-    static const size_t MAXCONN = 30000;
 };
 
 }  // namespace sponge

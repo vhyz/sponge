@@ -101,7 +101,6 @@ void TcpServer::onNewConn() {
 
         spTcpConnection spConn =
             std::make_shared<TcpConnection>(clientFd, ioLoop, localAddr_, peer);
-        spConn->setTcpNoDelay();
 
         spConn->setMessageCallBack(messageCallBack_);
         spConn->setSendCallBack(writeCompleteCallBack_);
@@ -109,19 +108,19 @@ void TcpServer::onNewConn() {
         spConn->setCloseCallBack(
             std::bind(&TcpServer::removeConn, this, std::placeholders::_1));
 
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-            connMap_[clientFd] = spConn;
-            connCount++;
-        }
+        connMap_[clientFd] = spConn;
+        connCount++;
+
         ioLoop->runInLoop(std::bind(&TcpConnection::connEstablished, spConn));
     }
 }
 
 void TcpServer::removeConn(const spTcpConnection& spConn) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    connMap_.erase(spConn->getFd());
-    --connCount;
+    loop_->runInLoop([this, spConn]() {
+        size_t n = connMap_.erase(spConn->getFd());
+        assert(n == 1);
+        --connCount;
+    });
 }
 
 }  // namespace sponge

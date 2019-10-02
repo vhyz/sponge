@@ -86,12 +86,16 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
     void setContext(const std::any& context) { context_ = context; }
 
-    const std::any& getContext() { return context_; }
+    void setContext(std::any&& context) { context_ = std::move(context_); }
+
+    const std::any& getContext() const { return context_; }
+
+    std::any& getContext() { return context_; }
 
     bool isConnected() const { return connected; }
 
-    void setTcpNoDelay() {
-        int on = 1;
+    void setTcpNoDelay(bool type) {
+        int on = type ? 1 : 0;
         setsockopt(fd_, SOL_SOCKET, TCP_NODELAY, &on, sizeof(on));
     }
 

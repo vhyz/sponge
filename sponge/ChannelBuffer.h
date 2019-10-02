@@ -15,6 +15,8 @@ class ChannelBuffer {
     static const size_t kInitBufferSize = 1024;
 
    public:
+
+    // init ChannelBuffer with size
     explicit ChannelBuffer(size_t size = kInitBufferSize)
         : buffer_(size), readIndex_(0), writeIndex_(0) {}
 
@@ -33,6 +35,8 @@ class ChannelBuffer {
     size_t capacity() { return buffer_.size(); }
 
     char* writePtr() { return buffer_.data() + writeIndex_; }
+
+    const char* writePtr() const { return buffer_.data() + writeIndex_; }
 
     const char* readPtr() const { return buffer_.data() + readIndex_; }
 
