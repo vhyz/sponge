@@ -1,39 +1,86 @@
 #pragma once
 
-#include <sponge/ChannelBuffer.h>
-#include "HttpRequest.h"
+#include <memory>
+#include <string>
+#include <unordered_map>
+
+struct http_parser;
+struct http_parser_settings;
 
 namespace sponge {
+
 namespace http {
 
 class HttpParser {
    public:
-    enum HttpParseState {
-        kExpectRequestLine,
-        kExpectHeaders,
-        kExpectBody,
-        kExpectNone
-    };
+    using Ptr = std::shared_ptr<HttpParser>;
 
-    HttpParser() : state_(kExpectRequestLine) {}
+    HttpParser();
 
-    bool parse(ChannelBuffer& buffer);
+    ~HttpParser();
 
-    bool parseCompletely() { return state_ == kExpectNone; }
+    void clear();
+
+    // parse http request
+    // return parse length when success
+    // return -1 when error
+    int parse(const char* str, size_t length);
+
+    const std::string& getUrl() const { return url_; }
+
+    const std::string& getBody() const { return body_; }
+
+    const std::unordered_map<std::string, std::string>& getHeaders() const {
+        return headers_;
+    }
+
+    bool isComplete() const { return isComplete_; }
 
    private:
-    bool parseRequestLine(const char* begin, const char* end);
+    // add field and value
+    // it will clear field and value
+    void addField();
 
-    bool parseHeaders(const char* begin, const char* end);
+    static int onMessageBegin(http_parser* parser);
 
-    bool parseBody(const char* begin, const char* end);
+    static int onMessageComplete(http_parser* parser);
+
+    static int onHeadersComplete(http_parser* parser);
+
+    static int onUrl(http_parser* parser, const char* at, size_t length);
+
+    static int onHeaderField(http_parser* parser, const char* at,
+                             size_t length);
+
+    static int onHeaderValue(http_parser* parser, const char* at,
+                             size_t length);
+
+    static int onBody(http_parser* parser, const char* at, size_t length);
+
+    static int onChunkComplete(http_parser* parser);
+
+    static int onChunkHeader(http_parser* parser);
+
+    static int onStatus(http_parser* parser, const char* at, size_t length);
 
    private:
-    HttpParseState state_;
+    std::unique_ptr<http_parser> parser_;
 
-    HttpRequest httpRequest_;
+    std::unique_ptr<http_parser_settings> settings_;
 
-    size_t contentLength_;
+    std::string url_;
+
+    std::string currentField_;
+
+    std::string currentValue_;
+
+    std::string body_;
+
+    std::unordered_map<std::string, std::string> headers_;
+
+    bool isComplete_;
+
+    bool isKeepAlive_;
 };
 
 }  // namespace http
