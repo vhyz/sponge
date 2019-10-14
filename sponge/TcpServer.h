@@ -11,7 +11,7 @@ namespace sponge {
 
 class TcpServer {
    public:
-    TcpServer(EventLoop* loop, int port, int threadNum);
+    TcpServer(EventLoop* loop, uint16_t port, int threadNum);
 
     ~TcpServer();
 
@@ -65,7 +65,7 @@ class TcpServer {
 
     void setReuse(int fd);
 
-    void listenPort(int port);
+    void listenPort(uint16_t port);
 
     void onNewConn();
 

@@ -8,7 +8,7 @@
 
 namespace sponge {
 
-TcpServer::TcpServer(EventLoop* loop, int port, int threadNum)
+TcpServer::TcpServer(EventLoop* loop, uint16_t port, int threadNum)
     : serverFd_(-1),
       serverEvent_(),
       loop_(loop),
@@ -63,7 +63,7 @@ void TcpServer::setReuse(int fd) {
     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 }
 
-void TcpServer::listenPort(int port) {
+void TcpServer::listenPort(uint16_t port) {
     sockaddr_in addr;
 
     bzero(&addr, sizeof(addr));

@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include "HttpRequest.h"
 
 struct http_parser;
 struct http_parser_settings;
@@ -11,13 +12,12 @@ namespace sponge {
 
 namespace http {
 
-class HttpParser {
+// parse HttpRequest
+class HttpRequestParser {
    public:
-    using Ptr = std::shared_ptr<HttpParser>;
+    HttpRequestParser();
 
-    HttpParser();
-
-    ~HttpParser();
+    ~HttpRequestParser();
 
     void clear();
 
@@ -26,15 +26,9 @@ class HttpParser {
     // return -1 when error
     int parse(const char* str, size_t length);
 
-    const std::string& getUrl() const { return url_; }
-
-    const std::string& getBody() const { return body_; }
-
-    const std::unordered_map<std::string, std::string>& getHeaders() const {
-        return headers_;
-    }
-
     bool isComplete() const { return isComplete_; }
+
+    const HttpRequest& getHttpRequest() const { return httpRequest_; }
 
    private:
     // add field and value
@@ -68,15 +62,11 @@ class HttpParser {
 
     std::unique_ptr<http_parser_settings> settings_;
 
-    std::string url_;
+    HttpRequest httpRequest_;
 
     std::string currentField_;
 
     std::string currentValue_;
-
-    std::string body_;
-
-    std::unordered_map<std::string, std::string> headers_;
 
     bool isComplete_;
 

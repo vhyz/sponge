@@ -37,7 +37,6 @@ TcpConnection::TcpConnection(int fd, EventLoop* loop,
     });
 }
 
-// 析构函数，不可能由主线程运行，因为主线程已经cleanup
 TcpConnection::~TcpConnection() { ::close(fd_); }
 
 void TcpConnection::send(std::string_view msg) {

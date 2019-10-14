@@ -86,7 +86,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
 
     void setContext(const std::any& context) { context_ = context; }
 
-    void setContext(std::any&& context) { context_ = std::move(context_); }
+    void setContext(std::any&& context) { context_ = std::move(context); }
 
     const std::any& getContext() const { return context_; }
 
