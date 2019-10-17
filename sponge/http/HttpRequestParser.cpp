@@ -74,7 +74,13 @@ int HttpRequestParser::onMessageComplete(http_parser* parser) {
     httpRequestParser->httpRequest_.setHttpMethod(HttpMethod(parser->method));
     httpRequestParser->httpRequest_.setKeepAlive(
         http_should_keep_alive(httpRequestParser->parser_.get()) != 0);
-    
+    if (parser->http_major == 1 && parser->http_minor == 1) {
+        httpRequestParser->httpRequest_.setHttpVersion(HttpVersion11);
+    } else if (parser->http_major == 1 && parser->http_minor == 0) {
+        httpRequestParser->httpRequest_.setHttpVersion(HttpVersion10);
+    } else {
+        httpRequestParser->httpRequest_.setHttpVersion(HttpVersionOther);
+    }
 
     return 0;
 }

@@ -1,4 +1,5 @@
 #include <sponge/http/HttpServer.h>
+#include <stdio.h>
 #include <iostream>
 
 using namespace sponge;
@@ -17,6 +18,14 @@ int main() {
                     "<head><title>sponge</title></head>"
                     "<body><h1>Hello</h1><h2>url is /</h2></body>"
                     "</html";
+            } else if (url == "/favicon.ico") {
+                FILE* fp = fopen("favicon.ico", "r");
+                size_t n;
+                do {
+                    char buf[1024];
+                    n = fread(buf, 1, sizeof(buf), fp);
+                    body.append(buf, n);
+                } while (n > 0);
             } else {
                 body =
                     "<html>"
@@ -24,6 +33,7 @@ int main() {
                     "<body><h1>Hello</h1><h2>url is other</h2></body>"
                     "</html";
             }
+            response->setStatusCode(200);
             response->setBody(std::move(body));
             response->addHeader("Content-Length",
                                 std::to_string(response->getBody().size()));

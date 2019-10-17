@@ -32,14 +32,22 @@ void HttpServer::onMessage(const spTcpConnection& conn, ChannelBuffer& buffer) {
 
     std::unique_ptr<HttpResponse> response;
     if (parseLength < 0) {
-        response = std::make_unique<HttpResponse>(request.getHttpVersion());
+        response = std::make_unique<HttpResponse>(HttpVersion11);
         response->setStatusCode(400);
         response->setKeepAlive(false);
     } else {
         buffer.readNBytes(static_cast<size_t>(parseLength));
         if (parser->isComplete()) {
-            response = std::make_unique<HttpResponse>(request.getHttpVersion());
-            httpCallBack_(request, response.get());
+            if (request.getHttpVersion() != HttpVersionOther) {
+                response =
+                    std::make_unique<HttpResponse>(request.getHttpVersion());
+                response->setKeepAlive(request.isKeepAlive());
+                httpCallBack_(request, response.get());
+            } else {
+                response = std::make_unique<HttpResponse>(HttpVersion11);
+                response->setStatusCode(505);
+                response->setKeepAlive(false);
+            }
         }
     }
 

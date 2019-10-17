@@ -27,6 +27,8 @@ class HttpRequest {
 
     void setHttpMethod(HttpMethod httpMethod) { httpMethod_ = httpMethod; }
 
+    void setHttpVersion(HttpVersion version) { httpVersion_ = version; }
+
     const char* getHttpMethodString() const;
 
     void setUrl(std::string url) { url_ = std::move(url); }
@@ -57,7 +59,7 @@ class HttpRequest {
 
     std::string serialize() const;
 
-    bool isKeepAlive() const;
+    bool isKeepAlive() const { return keepAlive_; }
 
     void setKeepAlive(bool v) { keepAlive_ = v; }
 
