@@ -21,6 +21,10 @@ class HttpRequestParser {
 
     void clear();
 
+    using Ptr = std::shared_ptr<HttpRequestParser>;
+
+    using WeakPtr = std::weak_ptr<HttpRequestParser>;
+
     // parse http request
     // return parse length when success
     // return -1 when error

@@ -1,4 +1,5 @@
 #include "HttpRequest.h"
+#include"http_parser.h"
 
 namespace sponge {
 namespace http {

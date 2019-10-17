@@ -10,7 +10,7 @@ namespace http {
 
 class HttpResponse {
    public:
-    HttpResponse() {}
+    HttpResponse(HttpVersion version) : httpVersion_(version) {}
 
     ~HttpResponse() {}
 
@@ -21,6 +21,10 @@ class HttpResponse {
     void setBody(std::string body) { body_ = std::move(body); }
 
     void setHttpVersion(HttpVersion value) { httpVersion_ = value; }
+
+    void setKeepAlive(bool on);
+
+    bool isKeepAlive() const;
 
     std::string& getBody() { return body_; }
 

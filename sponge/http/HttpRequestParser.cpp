@@ -71,6 +71,10 @@ int HttpRequestParser::onMessageBegin(http_parser* parser) { return 0; }
 int HttpRequestParser::onMessageComplete(http_parser* parser) {
     auto httpRequestParser = reinterpret_cast<HttpRequestParser*>(parser->data);
     httpRequestParser->isComplete_ = true;
+    httpRequestParser->httpRequest_.setHttpMethod(HttpMethod(parser->method));
+    httpRequestParser->httpRequest_.setKeepAlive(
+        http_should_keep_alive(httpRequestParser->parser_.get()) != 0);
+    
 
     return 0;
 }

@@ -1,3 +1,4 @@
+add_subdirectory(http)
 
 add_library(
     sponge
@@ -20,3 +21,4 @@ add_library(
 
 
 target_link_libraries(sponge pthread)
+target_link_libraries(sponge sponge_http)

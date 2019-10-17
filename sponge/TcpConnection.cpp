@@ -23,15 +23,14 @@ TcpConnection::TcpConnection(int fd, EventLoop* loop,
       connected(true),
       half_close_(false),
       readHighWaterMark_(readHighWaterMark) {
-
     event_.setFd(fd_);
     event_.enableRead();
-    event_.setEventCallBack([this](uint32_t events){
+    event_.setEventCallBack([this](uint32_t events) {
         auto guard = shared_from_this();
-        if(events & Event::SPEV_READ) {
+        if (events & Event::SPEV_READ) {
             handleRead();
         }
-        if(events & Event::SPEV_WRITE) {
+        if (events & Event::SPEV_WRITE) {
             handleWrite();
         }
     });
@@ -46,6 +45,16 @@ void TcpConnection::send(std::string_view msg) {
         void (TcpConnection::*fp)(std::string_view msg) =
             &TcpConnection::sendInLoop;
         loop_->runInLoop(std::bind(fp, shared_from_this(), std::string(msg)));
+    }
+}
+
+void TcpConnection::send(std::string msg) {
+    if (loop_->isInLoopThread()) {
+        sendInLoop(msg);
+    } else {
+        void (TcpConnection::*fp)(std::string_view) =
+            &TcpConnection::sendInLoop;
+        loop_->runInLoop(std::bind(fp, shared_from_this(), std::move(msg)));
     }
 }
 

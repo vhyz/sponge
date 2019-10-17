@@ -5,14 +5,14 @@ namespace sponge {
 namespace http {
 
 enum HttpMethod {
+    HttpMethodDelete = 0,
     HttpMethodGet,
+    HttpMethodHead,
     HttpMethodPost,
-    HttpMethodDelete,
-    HttpMethodPut,
-    HttpMethodHead
+    HttpMethodPut
 };
 
-enum HttpVersion { HttpVersion10, HttpVersion11 };
+enum HttpVersion { HttpVersion10, HttpVersion11, HttpVersionOther };
 
 }  // namespace http
 

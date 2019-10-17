@@ -18,6 +18,11 @@ class HttpRequest {
 
     ~HttpRequest() = default;
 
+    HttpRequest(const HttpRequest&) = default;
+    HttpRequest& operator=(const HttpRequest&) = default;
+    HttpRequest(HttpRequest&&) noexcept = default;
+    HttpRequest& operator=(HttpRequest&&) noexcept = default;
+
     void setHttpMethod(const char* str, size_t length);
 
     void setHttpMethod(HttpMethod httpMethod) { httpMethod_ = httpMethod; }
@@ -52,6 +57,10 @@ class HttpRequest {
 
     std::string serialize() const;
 
+    bool isKeepAlive() const;
+
+    void setKeepAlive(bool v) { keepAlive_ = v; }
+
    private:
     HttpMethod httpMethod_;
 
@@ -62,6 +71,8 @@ class HttpRequest {
     Headers headers_;
 
     std::string body_;
+
+    bool keepAlive_;
 };
 
 }  // namespace http
