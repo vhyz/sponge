@@ -99,7 +99,7 @@ void TcpServer::onNewConn() {
         InetAddress peer;
         peer.setAddress(clientAddr);
 
-        spTcpConnection spConn =
+        TcpConnection::Ptr spConn =
             std::make_shared<TcpConnection>(clientFd, ioLoop, localAddr_, peer);
 
         spConn->setMessageCallBack(messageCallBack_);
@@ -115,7 +115,7 @@ void TcpServer::onNewConn() {
     }
 }
 
-void TcpServer::removeConn(const spTcpConnection& spConn) {
+void TcpServer::removeConn(const TcpConnection::Ptr& spConn) {
     loop_->runInLoop([this, spConn]() {
         size_t n = connMap_.erase(spConn->getFd());
         assert(n == 1);

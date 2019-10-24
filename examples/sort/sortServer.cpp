@@ -20,14 +20,14 @@ class SortServer {
             std::bind(&LengthHeaderCodec::onMessage, &codec_, _1, _2));
     }
 
-    void onConnection(const spTcpConnection& spConn) {
+    void onConnection(const TcpConnection::Ptr& spConn) {
         INFO("connection %s -> %s %s",
              spConn->getPeerAddr().getIpAndPort().c_str(),
              spConn->getLocalAddr().getIpAndPort().c_str(),
              spConn->isConnected() ? "up" : "down");
     }
     
-    void onMessage(const spTcpConnection& spConn, std::vector<int32_t>& nums) {
+    void onMessage(const TcpConnection::Ptr& spConn, std::vector<int32_t>& nums) {
         threadPool_.putTask(
             std::bind(&SortServer::work, this, spConn, std::move(nums)));
     }

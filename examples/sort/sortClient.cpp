@@ -20,7 +20,7 @@ class SortClient {
             std::bind(&LengthHeaderCodec::onMessage, &codec_, _1, _2));
     }
 
-    void onConnection(const spTcpConnection& spConn) {
+    void onConnection(const TcpConnection::Ptr& spConn) {
         INFO("connection %s -> %s %s",
              spConn->getPeerAddr().getIpAndPort().c_str(),
              spConn->getLocalAddr().getIpAndPort().c_str(),
@@ -35,7 +35,7 @@ class SortClient {
         }
     }
 
-    void onMessage(const spTcpConnection& spConn, std::vector<int32_t>& nums) {
+    void onMessage(const TcpConnection::Ptr& spConn, std::vector<int32_t>& nums) {
         for (size_t i = 1; i < nums.size(); ++i) {
             if (nums[i - 1] > nums[i]) {
                 std::cout << "sort error\n";
@@ -61,7 +61,7 @@ class SortClient {
 
     LengthHeaderCodec codec_;
 
-    spTcpConnection conn_;
+    TcpConnection::Ptr conn_;
 
     TimerId sendTimer_;
 };

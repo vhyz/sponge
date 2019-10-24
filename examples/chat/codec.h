@@ -9,12 +9,12 @@ using namespace sponge;
 class LengthHeaderCodec {
    public:
     using StringMessageCallBack =
-        std::function<void(const spTcpConnection& spConn, const std::string&)>;
+        std::function<void(const TcpConnection::Ptr& spConn, const std::string&)>;
 
     explicit LengthHeaderCodec(StringMessageCallBack cb)
         : messageCallBack_(std::move(cb)) {}
 
-    void onMessage(const spTcpConnection& spConn, ChannelBuffer& buffer) {
+    void onMessage(const TcpConnection::Ptr& spConn, ChannelBuffer& buffer) {
         while (buffer.readableBytes() >= kHeaderLen) {
             int32_t len = buffer.peekInt32();
             if (buffer.readableBytes() >= len + kHeaderLen) {
@@ -26,7 +26,7 @@ class LengthHeaderCodec {
         }
     }
 
-    void send(const spTcpConnection& spConn, const std::string& msg) {
+    void send(const TcpConnection::Ptr& spConn, const std::string& msg) {
         ChannelBuffer buffer;
         buffer.appendInt32(msg.size());
         buffer.append(msg.data(), msg.size());

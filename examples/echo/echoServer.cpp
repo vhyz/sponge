@@ -8,14 +8,14 @@ int main() {
     setLogLevel(LOG_LEVEL_DEBUG);
     EventLoop loop;
     TcpServer tcpServer(&loop, 5000, 7);
-    tcpServer.setConnCallBack([](const spTcpConnection& spConn) {
+    tcpServer.setConnCallBack([](const TcpConnection::Ptr& spConn) {
         INFO("connection %s -> %s %s",
              spConn->getPeerAddr().getIpAndPort().c_str(),
              spConn->getLocalAddr().getIpAndPort().c_str(),
              spConn->isConnected() ? "up" : "down");
     });
     tcpServer.setMessageCallBack(
-        [](const spTcpConnection& spConn, ChannelBuffer& msg) {
+        [](const TcpConnection::Ptr& spConn, ChannelBuffer& msg) {
             INFO("handleRead %d bytes", msg.readableBytes());
             spConn->send(msg.readAllBytesAsString());
         });

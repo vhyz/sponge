@@ -37,7 +37,7 @@ class TcpClient {
    private:
     void newConnection(int fd);
 
-    void removeConnection(const spTcpConnection& spConn);
+    void removeConnection(const TcpConnection::Ptr& spConn);
 
    private:
     EventLoop* loop_;
@@ -50,7 +50,7 @@ class TcpClient {
 
     std::mutex mutex_;
 
-    spTcpConnection conn_;
+    TcpConnection::Ptr conn_;
 
     MessageCallBack messageCallBack_;
     ConnectionCallBack connectionCallBack_;

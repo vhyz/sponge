@@ -13,7 +13,7 @@ HttpServer::HttpServer(EventLoop* loop, uint16_t port, int threadNum)
         std::bind(&HttpServer::onMessage, this, _1, _2));
 }
 
-void HttpServer::onConnection(const spTcpConnection& conn) {
+void HttpServer::onConnection(const TcpConnection::Ptr& conn) {
     INFO("connection %s -> %s %s", conn->getPeerAddr().getIpAndPort().c_str(),
          conn->getLocalAddr().getIpAndPort().c_str(),
          conn->isConnected() ? "up" : "down");
@@ -22,7 +22,7 @@ void HttpServer::onConnection(const spTcpConnection& conn) {
     }
 }
 
-void HttpServer::onMessage(const spTcpConnection& conn, ChannelBuffer& buffer) {
+void HttpServer::onMessage(const TcpConnection::Ptr& conn, ChannelBuffer& buffer) {
     HttpRequestParser* parser =
         std::any_cast<std::shared_ptr<HttpRequestParser>>(conn->getContext())
             .get();

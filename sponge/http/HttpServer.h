@@ -21,9 +21,9 @@ class HttpServer {
     void start() { tcpServer_.start(); }
 
    private:
-    void onConnection(const spTcpConnection& conn);
+    void onConnection(const TcpConnection::Ptr& conn);
 
-    void onMessage(const spTcpConnection& conn, ChannelBuffer& buffer);
+    void onMessage(const TcpConnection::Ptr& conn, ChannelBuffer& buffer);
 
    private:
     TcpServer tcpServer_;

@@ -19,7 +19,7 @@ class ChatServer {
             std::bind(&ChatServer::onConnection, this, _1));
     }
 
-    void onConnection(const spTcpConnection& spConn) {
+    void onConnection(const TcpConnection::Ptr& spConn) {
         INFO("connection %s -> %s %s , fd: %d",
              spConn->getPeerAddr().getIpAndPort().c_str(),
              spConn->getLocalAddr().getIpAndPort().c_str(),
@@ -34,10 +34,10 @@ class ChatServer {
         }
     }
 
-    void onMessage(const spTcpConnection& spConn, const std::string& msg) {
+    void onMessage(const TcpConnection::Ptr& spConn, const std::string& msg) {
         std::lock_guard<std::mutex> lock(mutex_);
 
-        for (const spTcpConnection& spConn : connectionList_) {
+        for (const TcpConnection::Ptr& spConn : connectionList_) {
             codec_.send(spConn, msg);
         }
     }
@@ -49,7 +49,7 @@ class ChatServer {
 
     std::mutex mutex_;
 
-    std::set<spTcpConnection> connectionList_;
+    std::set<TcpConnection::Ptr> connectionList_;
 
     LengthHeaderCodec codec_;
 };

@@ -22,7 +22,7 @@ int main() {
                 FILE* fp = fopen("favicon.ico", "r");
                 size_t n;
                 do {
-                    char buf[1024];
+                    char buf[10240];
                     n = fread(buf, 1, sizeof(buf), fp);
                     body.append(buf, n);
                 } while (n > 0);

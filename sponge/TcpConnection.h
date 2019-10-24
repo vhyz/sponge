@@ -17,8 +17,6 @@ namespace sponge {
 
 class TcpConnection;
 
-using spTcpConnection = std::shared_ptr<TcpConnection>;
-
 class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
    public:
     TcpConnection(int fd, EventLoop* loop, const InetAddress& localAddr,
@@ -26,6 +24,8 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
                   size_t readHighWaterMark = 1024 * 1024 * 4);
 
     ~TcpConnection();
+
+    using Ptr = std::shared_ptr<TcpConnection>;
 
     // 主动发送消息，由其他线程调用时会将任务添加至loop中
     void send(std::string_view msg);

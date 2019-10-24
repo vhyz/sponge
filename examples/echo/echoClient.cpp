@@ -17,7 +17,7 @@ class EchoClient {
             std::bind(&EchoClient::onMessage, this, _1, _2));
     }
 
-    void onConnection(const spTcpConnection& spConn) {
+    void onConnection(const TcpConnection::Ptr& spConn) {
         INFO("connection %s -> %s %s",
              spConn->getPeerAddr().getIpAndPort().c_str(),
              spConn->getLocalAddr().getIpAndPort().c_str(),
@@ -31,7 +31,7 @@ class EchoClient {
         }
     }
 
-    void onMessage(const spTcpConnection spConn, ChannelBuffer& buffer) {
+    void onMessage(const TcpConnection::Ptr spConn, ChannelBuffer& buffer) {
         std::cout << "recv msg: " << buffer.readAllBytesAsString() << std::endl;
     }
 
@@ -49,7 +49,7 @@ class EchoClient {
    private:
     TcpClient client_;
 
-    spTcpConnection conn_;
+    TcpConnection::Ptr conn_;
 
     std::mutex mutex_;
 };

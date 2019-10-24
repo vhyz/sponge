@@ -9,13 +9,11 @@ namespace sponge {
 
 class TcpConnection;
 
-using spTcpConnection = std::shared_ptr<TcpConnection>;
-
 using CallBack = std::function<void()>;
 
-using ConnectionCallBack = std::function<void(const spTcpConnection&)>;
+using ConnectionCallBack = std::function<void(const std::shared_ptr<TcpConnection>&)>;
 
 using MessageCallBack =
-    std::function<void(const spTcpConnection&, ChannelBuffer&)>;
+    std::function<void(const std::shared_ptr<TcpConnection>&, ChannelBuffer&)>;
 
 }  // namespace sponge

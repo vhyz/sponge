@@ -20,7 +20,7 @@ class ChatClient {
             std::bind(&LengthHeaderCodec::onMessage, &codec_, _1, _2));
     }
 
-    void onConnection(const spTcpConnection& spConn) {
+    void onConnection(const TcpConnection::Ptr& spConn) {
         INFO("connection %s -> %s %s",
              spConn->getPeerAddr().getIpAndPort().c_str(),
              spConn->getLocalAddr().getIpAndPort().c_str(),
@@ -34,7 +34,7 @@ class ChatClient {
         }
     }
 
-    void onMessage(const spTcpConnection& spConn, const std::string& msg) {
+    void onMessage(const TcpConnection::Ptr& spConn, const std::string& msg) {
         std::cout << "recv message: " << msg << std::endl;
     }
 
@@ -54,7 +54,7 @@ class ChatClient {
 
     LengthHeaderCodec codec_;
 
-    spTcpConnection conn_;
+    TcpConnection::Ptr conn_;
 
     std::mutex mutex_;
 };

@@ -44,7 +44,7 @@ class TcpServer {
     size_t connCount;
 
     // 连接表
-    std::map<int, spTcpConnection> connMap_;
+    std::map<int, TcpConnection::Ptr> connMap_;
 
     // IO线程池
     EventLoopThreadPool threadPool_;
@@ -69,7 +69,7 @@ class TcpServer {
 
     void onNewConn();
 
-    void removeConn(const spTcpConnection& spConn);
+    void removeConn(const TcpConnection::Ptr& spConn);
 };
 
 }  // namespace sponge

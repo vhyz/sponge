@@ -39,7 +39,7 @@ void TcpClient::newConnection(int fd) {
     loop_->runInLoop(std::bind(&TcpConnection::connEstablished, conn_));
 }
 
-void TcpClient::removeConnection(const spTcpConnection& spConn) {
+void TcpClient::removeConnection(const TcpConnection::Ptr& spConn) {
     {
         std::lock_guard<std::mutex> lock(mutex_);
         conn_.reset();

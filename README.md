@@ -30,13 +30,13 @@ sponge是一个基于Reactor模式的多线程非阻塞网络库，是我在阅�
 
 * setConnCallBack() 设置连接成功建立和断开时的回调函数 
 
-传入的回调函数签名为 void(const spTcpConnection&)
+传入的回调函数签名为 void(const TcpConnection::Ptr&)
 * setMessageCallBack() 设置收到消息时的回调函数 
 
-传入的回调函数签名为 void(const spTcpConnection&, ChannelBuffer&)
+传入的回调函数签名为 void(const TcpConnection::Ptr&, ChannelBuffer&)
 * setWriteCompleteCallBack() 设置消息完全发送时的回调函数
 
-传入的回调函数签名为 void(const spTcpConnection&)
+传入的回调函数签名为 void(const TcpConnection::Ptr&)
 
 比如写一个Echo服务器，我们需要设置收到消息时的回调函数
 
@@ -54,7 +54,7 @@ int main() {
     TcpServer tcpServer(&loop, 5000, 7);
     // 设置消息回调
     tcpServer.setMessageCallBack(
-        [](const spTcpConnection& spConn, ChannelBuffer& msg) {
+        [](const TcpConnection::Ptr& spConn, ChannelBuffer& msg) {
             INFO("handleRead %d bytes", msg.readableBytes());
             spConn->send(msg.readAllBytesAsString());
         });
