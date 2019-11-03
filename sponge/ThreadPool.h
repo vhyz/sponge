@@ -7,10 +7,11 @@
 #include <vector>
 #include "BlockQueue.h"
 #include "CallBack.h"
+#include "noncopyable.h"
 
 namespace sponge {
 
-class ThreadPool {
+class ThreadPool : public noncopyable {
    public:
     explicit ThreadPool(size_t threadPoolSize);
 
@@ -29,4 +30,3 @@ class ThreadPool {
 };
 
 }  // namespace sponge
-

@@ -5,10 +5,11 @@
 #include <vector>
 #include "EventLoop.h"
 #include "EventLoopThread.h"
+#include "noncopyable.h"
 
 namespace sponge {
 
-class EventLoopThreadPool {
+class EventLoopThreadPool : public noncopyable {
    public:
     EventLoopThreadPool(EventLoop* mainLoop, int numThread);
 

@@ -12,12 +12,14 @@
 #include "Event.h"
 #include "EventLoop.h"
 #include "InetAddress.h"
+#include "noncopyable.h"
 
 namespace sponge {
 
 class TcpConnection;
 
-class TcpConnection : public std::enable_shared_from_this<TcpConnection> {
+class TcpConnection : public std::enable_shared_from_this<TcpConnection>,
+                      public noncopyable {
    public:
     TcpConnection(int fd, EventLoop* loop, const InetAddress& localAddr,
                   const InetAddress& peerAddr,

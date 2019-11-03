@@ -4,10 +4,11 @@
 #include "EventLoop.h"
 #include "TcpConnection.h"
 #include "Timer.h"
+#include "noncopyable.h"
 
 namespace sponge {
 
-class Connector {
+class Connector : public noncopyable {
    public:
     Connector(EventLoop* loop, const InetAddress& peer);
 

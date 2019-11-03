@@ -9,10 +9,11 @@
 #include "Poller.h"
 #include "Timer.h"
 #include "TimerManager.h"
+#include "noncopyable.h"
 
 namespace sponge {
 
-class EventLoop {
+class EventLoop : public noncopyable {
    public:
     using Functor = std::function<void()>;
 

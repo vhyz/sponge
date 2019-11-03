@@ -6,12 +6,13 @@
 #include <vector>
 #include "Event.h"
 #include "Timer.h"
+#include "noncopyable.h"
 
 namespace sponge {
 
 class EventLoop;
 
-class TimerManager {
+class TimerManager : public noncopyable {
    private:
     using Entry = std::pair<TimeStamp, std::shared_ptr<Timer>>;
 

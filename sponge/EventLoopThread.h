@@ -4,10 +4,11 @@
 #include <mutex>
 #include <thread>
 #include "EventLoop.h"
+#include"noncopyable.h"
 
 namespace sponge {
 
-class EventLoopThread {
+class EventLoopThread: public noncopyable {
    public:
     EventLoopThread();
 

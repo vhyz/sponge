@@ -5,10 +5,11 @@
 #include "Connector.h"
 #include "EventLoop.h"
 #include "TcpConnection.h"
+#include "noncopyable.h"
 
 namespace sponge {
 
-class TcpClient {
+class TcpClient : public noncopyable {
    public:
     TcpClient(EventLoop* loop, const InetAddress& peer, bool reconnect = false);
 
