@@ -32,3 +32,9 @@ add_executable(
     ChannelBuffer_test.cpp
 )
 target_link_libraries(ChannelBuffer_test sponge)
+
+add_executable(
+    SharedBuffer_test
+    SharedBuffer_test.cpp
+)
+target_link_libraries(SharedBuffer_test sponge)
