@@ -13,68 +13,71 @@ namespace sponge {
     实际可改为std::string等支持data()与size()方法的字符容器
 */
 
-template <typename Data = std::vector<char>>
-class SharedMutableBuffer {
+template <typename Data>
+class BasicSharedMutableBuffer : public MutableBuffer {
    public:
-    using ValueType = MutableBuffer;
-
     using DataType = Data;
 
     using DataPtr = std::shared_ptr<Data>;
 
-    SharedMutableBuffer() {}
+    BasicSharedMutableBuffer() {}
 
-    explicit SharedMutableBuffer(std::shared_ptr<Data> data) {
-        data_ = std::move(data);
+    BasicSharedMutableBuffer(const BasicSharedMutableBuffer<Data>& buffer)
+        : MutableBuffer(buffer), dataPtr_(buffer.dataPtr_) {}
+
+    explicit BasicSharedMutableBuffer(std::shared_ptr<Data> dataPtr)
+        : dataPtr_(std::move(dataPtr)) {
+        data_ = dataPtr_->data();
+        size_ = dataPtr_->size();
     }
 
-    std::shared_ptr<Data> getDataPtr() const { return data_; }
+    void setDataPtr(std::shared_ptr<Data> dataPtr) {
+        dataPtr_ = std::move(dataPtr);
+        data_ = dataPtr_->data();
+        size_ = dataPtr_->size();
+    }
 
-    template <typename... Args>
-    SharedMutableBuffer(Args&&... args)
-        : data_(std::make_shared<Data>(std::forward<Args>(args)...)),
-          mutableBuffer_(data_->data(), data_->size()) {}
-
-    const ValueType* begin() const { return mutableBuffer_.begin(); }
-
-    const ValueType* end() const { return mutableBuffer_.end(); }
+    std::shared_ptr<Data> getDataPtr() const { return dataPtr_; }
 
    private:
-    std::shared_ptr<Data> data_;
-
-    MutableBuffer mutableBuffer_;
+    std::shared_ptr<Data> dataPtr_;
 };
 
-template <typename Data = std::vector<char>>
-class SharedConstBuffer {
+template <typename Data>
+class BasicSharedConstBuffer : public ConstBuffer {
    public:
-    using ValueType = ConstBuffer;
-
     using DataType = Data;
 
     using DataPtr = std::shared_ptr<Data>;
 
-    SharedConstBuffer() {}
+    BasicSharedConstBuffer() {}
 
-    explicit SharedConstBuffer(std::shared_ptr<Data> data) {
-        data_ = std::move(data);
+    BasicSharedConstBuffer(const BasicSharedConstBuffer& buffer)
+        : ConstBuffer(buffer), dataPtr_(buffer.dataPtr_) {}
+
+    BasicSharedConstBuffer(const BasicSharedMutableBuffer<Data>& buffer)
+        : ConstBuffer(buffer), dataPtr_(buffer.getDataPtr()) {}
+
+    explicit BasicSharedConstBuffer(std::shared_ptr<Data> dataPtr)
+        : dataPtr_(std::move(dataPtr)) {
+        data_ = dataPtr_->data();
+        size_ = dataPtr_->size();
     }
-    
-    std::shared_ptr<Data> getDataPtr() const { return data_; }
 
-    template <typename... Args>
-    SharedConstBuffer(Args&&... args)
-        : data_(std::make_shared<Data>(std::forward<Args>(args)...)),
-          constBuffer_(data_->data(), data_->size()) {}
+    void setDataPtr(std::shared_ptr<Data> dataPtr) {
+        dataPtr_ = std::move(dataPtr);
+        data_ = dataPtr_->data();
+        size_ = dataPtr_->size();
+    }
 
-    const ValueType* begin() const { return constBuffer_.begin(); }
-
-    const ValueType* end() const { return constBuffer_.end(); }
+    std::shared_ptr<Data> getDataPtr() const { return dataPtr_; }
 
    private:
-    std::shared_ptr<Data> data_;
-
-    ConstBuffer constBuffer_;
+    std::shared_ptr<Data> dataPtr_;
 };
+
+using SharedMutableBuffer = BasicSharedMutableBuffer<std::vector<char>>;
+
+using SharedConstBuffer = BasicSharedConstBuffer<std::vector<char>>;
 
 }  // namespace sponge

@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include "Buffer.h"
 #include "CallBack.h"
 #include "ChannelBuffer.h"
 #include "Event.h"

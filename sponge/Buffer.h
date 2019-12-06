@@ -20,11 +20,7 @@ class MutableBuffer {
 
     size_t size() const { return size_; }
 
-    const MutableBuffer* begin() const { return this; }
-
-    const MutableBuffer* end() const { return this + 1; }
-
-   private:
+   protected:
     void* data_;
 
     size_t size_;
@@ -50,11 +46,7 @@ class ConstBuffer {
 
     size_t size() const { return size_; }
 
-    const ConstBuffer* begin() const { return this; }
-
-    const ConstBuffer* end() const { return this + 1; }
-
-   private:
+   protected:
     const void* data_;
 
     size_t size_;
