@@ -20,7 +20,7 @@ Poller::Poller()
 
 Poller::~Poller() { close(epollfd_); }
 
-void Poller::poll(int timeout) {
+void Poller::poll(std::vector<Event*>* activeEventList, int timeout) {
     int numEvents =
         epoll_wait(epollfd_, eventList_.data(), eventList_.size(), timeout);
 
@@ -35,7 +35,16 @@ void Poller::poll(int timeout) {
 
         Event* event = static_cast<Event*>(eventList_[i].data.ptr);
 
-        event->handleEvent(events);
+        uint32_t activeEvents = Event::SPEV_NONE;
+        if (events & (EPOLLIN | EPOLLPRI)) {
+            activeEvents |= Event::SPEV_READ;
+        }
+        if (events & EPOLLOUT) {
+            activeEvents |= Event::SPEV_WRITE;
+        }
+
+        event->setActiveEvents(activeEvents);
+        activeEventList->push_back(event);
     }
 
     if (static_cast<size_t>(numEvents) == eventList_.size()) {
@@ -43,12 +52,24 @@ void Poller::poll(int timeout) {
     }
 }
 
+uint32_t eventToEpollEvent(Event* event) {
+    uint32_t res = 0;
+    uint32_t events = event->getEvents();
+    if (events & Event::SPEV_READ) {
+        res |= (EPOLLIN | EPOLLPRI);
+    }
+    if (events & Event::SPEV_WRITE) {
+        res |= EPOLLOUT;
+    }
+    return res;
+}
+
 void Poller::addEvent(Event* event) {
     int fd = event->getFd();
 
     epoll_event ev;
     ev.data.ptr = event;
-    ev.events = event->getEvents();
+    ev.events = eventToEpollEvent(event);
 
     if (epoll_ctl(epollfd_, EPOLL_CTL_ADD, fd, &ev) < 0) {
         ERROR("epoll_ctl error");
@@ -60,7 +81,7 @@ void Poller::updateEvent(Event* event) {
 
     epoll_event ev;
     ev.data.ptr = event;
-    ev.events = event->getEvents();
+    ev.events = eventToEpollEvent(event);
 
     if (epoll_ctl(epollfd_, EPOLL_CTL_MOD, fd, &ev) < 0) {
         ERROR("epoll_ctl error");
@@ -72,7 +93,7 @@ void Poller::removeEvent(Event* event) {
 
     epoll_event ev;
     ev.data.ptr = event;
-    ev.events = event->getEvents();
+    ev.events = eventToEpollEvent(event);
 
     if (epoll_ctl(epollfd_, EPOLL_CTL_DEL, fd, &ev) < 0) {
         ERROR("epoll_ctl error");

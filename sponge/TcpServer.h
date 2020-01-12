@@ -4,13 +4,12 @@
 #include "CallBack.h"
 #include "Event.h"
 #include "EventLoop.h"
-#include "EventLoopThreadPool.h"
 #include "TcpConnection.h"
 #include "noncopyable.h"
 
 namespace sponge {
 
-class TcpServer :public noncopyable {
+class TcpServer : public noncopyable {
    public:
     TcpServer(EventLoop* loop, uint16_t port, int threadNum);
 

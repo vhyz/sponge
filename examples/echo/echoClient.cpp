@@ -1,4 +1,4 @@
-#include <sponge/EventLoopThread.h>
+#include <sponge/EventLoop.h>
 #include <sponge/Logger.h>
 #include <sponge/TcpClient.h>
 #include <iostream>

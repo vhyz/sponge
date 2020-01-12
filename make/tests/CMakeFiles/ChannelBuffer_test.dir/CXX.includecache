@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+..//sponge/ChannelBuffer.h
+assert.h
+-
+endian.h
+-
+stdint.h
+-
+string.h
+-
+string
+-
+string_view
+-
+vector
+-
+
+/home/vhyz/VSCode/sponge/tests/ChannelBuffer_test.cpp
+sponge/ChannelBuffer.h
+-
+stdio.h
+-
+iostream
+-
+

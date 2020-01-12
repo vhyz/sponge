@@ -19,6 +19,7 @@ int main() {
                     "<body><h1>Hello</h1><h2>url is /</h2></body>"
                     "</html";
             } else if (url == "/favicon.ico") {
+                /*
                 FILE* fp = fopen("favicon.ico", "r");
                 size_t n;
                 do {
@@ -26,6 +27,7 @@ int main() {
                     n = fread(buf, 1, sizeof(buf), fp);
                     body.append(buf, n);
                 } while (n > 0);
+                */
             } else {
                 body =
                     "<html>"

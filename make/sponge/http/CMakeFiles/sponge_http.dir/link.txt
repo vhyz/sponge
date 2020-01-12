@@ -1,0 +1,2 @@
+/usr/bin/ar qc libsponge_http.a  CMakeFiles/sponge_http.dir/http_parser.c.o CMakeFiles/sponge_http.dir/HttpRequest.cpp.o CMakeFiles/sponge_http.dir/HttpRequestParser.cpp.o CMakeFiles/sponge_http.dir/HttpResponse.cpp.o CMakeFiles/sponge_http.dir/HttpServer.cpp.o
+/usr/bin/ranlib libsponge_http.a

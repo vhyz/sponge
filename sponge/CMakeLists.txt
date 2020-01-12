@@ -4,10 +4,7 @@ add_library(
     sponge
     BlockQueue.cpp
     Connector.cpp
-    Event.cpp
     EventLoop.cpp
-    EventLoopThread.cpp
-    EventLoopThreadPool.cpp
     InetAddress.cpp
     Logger.cpp
     Poller.cpp
@@ -15,8 +12,8 @@ add_library(
     TcpConnection.cpp
     TcpServer.cpp
     ThreadPool.cpp
+    Timer.cpp
     TimerManager.cpp
-    TimeStamp.cpp
  )
 
 

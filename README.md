@@ -4,7 +4,7 @@
 
 ## Introduction
 
-sponge是一个基于Reactor模式的多线程非阻塞网络库，是我在阅读陈硕老师的《Linux多线程服务端编程》后的一个练手项目。
+sponge是一个基于Reactor模式的多线程非阻塞网络库，是我在阅读陈硕老师的《Linux多线程服务端编程》后的一个项目。
 
 ## Envoirment
 
@@ -56,7 +56,8 @@ int main() {
     tcpServer.setMessageCallBack(
         [](const TcpConnection::Ptr& spConn, ChannelBuffer& msg) {
             INFO("handleRead %d bytes", msg.readableBytes());
-            spConn->send(msg.readAllBytesAsString());
+            spConn->send(msg.readPtr(), msg.readableBytes());
+            msg.readAllBytes();
         });
     tcpServer.start();
     loop.loop();

@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+..//sponge/SharedBuffer.h
+memory
+-
+string
+-
+vector
+-
+Buffer.h
+../sponge/Buffer.h
+
+../sponge/Buffer.h
+cstddef
+-
+
+/home/vhyz/VSCode/sponge/tests/SharedBuffer_test.cpp
+sponge/SharedBuffer.h
+-
+iostream
+-
+string
+-
+

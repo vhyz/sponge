@@ -65,7 +65,60 @@ class EventLoop : public noncopyable {
     // 监听唤醒读事件
     std::unique_ptr<WakeUpEvent> wakeUpEvent_;
 
+    std::vector<Event*> activeEventList_;
+
     TimerManager timerManager_;
+};
+
+class EventLoopThread : public noncopyable {
+   public:
+    EventLoopThread();
+
+    ~EventLoopThread();
+
+    void start();
+
+    EventLoop* getEventLoop() const { return loop_; }
+
+    void join() { thread_.join(); }
+
+   private:
+    std::thread thread_;
+
+    EventLoop* loop_;
+
+    std::mutex mutex_;
+
+    std::condition_variable condi_;
+
+    void threadFunc();
+};
+
+class EventLoopThreadPool : public noncopyable {
+   public:
+    EventLoopThreadPool(EventLoop* mainLoop, int numThread);
+
+    ~EventLoopThreadPool() = default;
+
+    // 由主线程运行，得到下一个loop
+    EventLoop* getNextLoop();
+
+    //启动线程池
+    void start();
+
+    int getNumThread() const { return numThread_; }
+
+   private:
+    std::vector<std::unique_ptr<EventLoopThread>> threadList_;
+
+    // 用于accept的socket fd
+    EventLoop* mainLoop_;
+
+    // 线程数量
+    int numThread_;
+
+    // 下一个线程的索引
+    int next_;
 };
 
 }  // namespace sponge

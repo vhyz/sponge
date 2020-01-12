@@ -17,7 +17,8 @@ int main() {
     tcpServer.setMessageCallBack(
         [](const TcpConnection::Ptr& spConn, ChannelBuffer& msg) {
             INFO("handleRead %d bytes", msg.readableBytes());
-            spConn->send(msg.readAllBytesAsString());
+            spConn->send(msg.readPtr(), msg.readableBytes());
+            msg.readAllBytes();
         });
     tcpServer.start();
     loop.loop();

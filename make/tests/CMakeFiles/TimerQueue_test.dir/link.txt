@@ -1,0 +1,1 @@
+/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/TimerQueue_test.dir/TimerQueue_test.cpp.o  -o TimerQueue_test ../sponge/libsponge.a -lpthread ../sponge/http/libsponge_http.a 

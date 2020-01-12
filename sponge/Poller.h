@@ -15,10 +15,7 @@ class Poller : public noncopyable {
     ~Poller();
 
     // 等待事件
-    void poll(int timeout);
-
-    // 处理活跃事件
-    void processActiveEvents();
+    void poll(std::vector<Event*>* activeEventList, int timeout);
 
     // 添加事件
     void addEvent(Event* event);
