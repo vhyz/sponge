@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/SharedBuffer_test.dir/SharedBuffer_test.cpp.o  -o SharedBuffer_test ../sponge/libsponge.a -lpthread ../sponge/http/libsponge_http.a 

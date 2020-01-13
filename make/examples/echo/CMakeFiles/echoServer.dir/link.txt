@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/echoServer.dir/echoServer.cpp.o  -o echoServer ../../sponge/libsponge.a -lpthread ../../sponge/http/libsponge_http.a 

@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/httpExample.dir/httpExample.cpp.o  -o httpExample ../../sponge/libsponge.a -lpthread ../../sponge/http/libsponge_http.a 

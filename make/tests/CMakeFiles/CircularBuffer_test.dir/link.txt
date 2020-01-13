@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/CircularBuffer_test.dir/CircularBuffer_test.cpp.o  -o CircularBuffer_test 

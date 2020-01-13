@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/chatClient.dir/chatClient.cpp.o  -o chatClient ../../sponge/libsponge.a -lpthread ../../sponge/http/libsponge_http.a 

@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/ChannelBuffer_test.dir/ChannelBuffer_test.cpp.o  -o ChannelBuffer_test ../sponge/libsponge.a -lpthread ../sponge/http/libsponge_http.a 

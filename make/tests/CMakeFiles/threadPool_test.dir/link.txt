@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/threadPool_test.dir/threadPool_test.cpp.o  -o threadPool_test ../sponge/libsponge.a -lpthread ../sponge/http/libsponge_http.a 

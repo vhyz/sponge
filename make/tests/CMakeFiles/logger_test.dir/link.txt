@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/logger_test.dir/logger_test.cpp.o  -o logger_test ../sponge/libsponge.a -lpthread ../sponge/http/libsponge_http.a 

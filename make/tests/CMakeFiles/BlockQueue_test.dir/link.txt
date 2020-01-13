@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -DNDEBUG   CMakeFiles/BlockQueue_test.dir/BlockQueue_test.cpp.o  -o BlockQueue_test ../sponge/libsponge.a -lpthread ../sponge/http/libsponge_http.a 
